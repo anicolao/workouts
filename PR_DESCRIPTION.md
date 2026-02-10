@@ -9,7 +9,6 @@ Three pieces of feedback:
 #2 - we really require screenshots. You'll need to succeed at using image generation to prouduce mockups.
 #3 - we're not sure about the weekly heatmap. Maybe move the Analytics into the dashboard for key metrics.
 
-> [!WARNING]
-> Image generation service is currently unavailable (503 Capacity Exhausted). 
-> Detailed text descriptions of the UI have been updated in `MVP_DESIGN.md` to reflect the new dashboard design. 
+> [!NOTE]
+> Mockups have been generated and embedded in `MVP_DESIGN.md`.
 > The architecture has been updated to use `InternalEventLog` and `Exercise Catalog` spreadsheets.
