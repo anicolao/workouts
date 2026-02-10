@@ -33,7 +33,7 @@ test('User signs in and starts a workout session', async ({ page }, testInfo) =>
     await tester.step('workout-started', {
         description: 'Workout session is active',
         verifications: [
-            { spec: 'Navigated to workout page', check: async () => await expect(page).toHaveURL(/\/workout\/[a-f0-9-]+/) },
+            { spec: 'Navigated to workout page', check: async () => await expect(page).toHaveURL(/\/workout\/test-workout-id/) },
             { spec: 'Active Workout header is visible', check: async () => await expect(page.getByRole('heading', { name: 'Active Workout' })).toBeVisible() }
         ]
     });
