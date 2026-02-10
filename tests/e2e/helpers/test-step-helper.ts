@@ -26,6 +26,7 @@ export class TestStepHelper {
         }
 
         // 2. Capture & Verify (Zero-Pixel Tolerance)
+        await this.page.evaluate(() => document.fonts.ready);
         // This will check against the baseline in 'screenshots/{filename}'.
         await expect(this.page).toHaveScreenshot(screenshotName);
 
