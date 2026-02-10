@@ -38,34 +38,34 @@ graph TD
 
 ## Data Schema (Google Sheets)
 
-The backend will be a single Google Spreadsheet with multiple tabs.
+The backend will use **two separate Google Spreadsheets** to clearly distinguish between user-editable configuration and internal data.
 
-### Tab 1: `Events` (Source of Truth)
-Append-only log of all actions.
+### Spreadsheet 1: `InternalEventLog` (Do Not Edit)
+This sheet acts as the database's write-ahead log. It is strictly append-only.
 
 | Column | Type | Description |
 | :--- | :--- | :--- |
 | `EventID` | UUID | Unique ID |
-| `Timestamp` | ISO8601 | When it happened |
+| `Timestamp` | ISO8601 | Server-side timestamp |
 | `ActionType` | String | `workout/start`, `set/log`, `exercise/create` |
-| `Payload` | JSON | Full details |
+| `Payload` | JSON | Full details of the event |
 
-### Tab 2: `Config` (User Editable)
-User-managed configuration.
+### Spreadsheet 2: `Exercise Catalog` (User Editable)
+This sheet is designed for the user to view and manage their available exercises and settings.
 
-| Exercise Name | Muscle Group | Movement Pattern | Default RPE |
-| :--- | :--- | :--- | :--- |
-| Squat | Legs | Squat | 8 |
-| Bench Press | Chest | Push | 9 |
+| Exercise Name | Muscle Group | Movement Pattern | Default RPE | Tags |
+| :--- | :--- | :--- | :--- | :--- |
+| Squat | Legs | Squat | 8 | Core, Powerlifting |
+| Bench Press | Chest | Push | 9 | Core, Powerlifting |
 
-## UI Mockups (Descriptions)
+## UI Mockups
 
 ### Dashboard
-*   **Aesthetic**: Dark mode, "Data-First". High contrast numbers, neon accents (cyan/lime).
-*   **Layout**:
-    *   **Top**: "Start Workout" button (Prominent).
-    *   **Middle**: "Weekly Consistency" heatmap (Green squares for active days).
-    *   **Bottom**: "Quick Stats" - Total Volume this week, distinct exercises.
+*   **Aesthetic**: Dark mode, "Data-First". High contrast, neon accents (cyan/lime).
+*   **Top**: "Start Workout" button (Prominent).
+*   **Key Metrics**: Row of sparkline cards for "Core Exercises" (e.g., Squat, Bench, Deadlift) showing current estimated 1RM.
+*   **Bottom**: "See Full Analytics" button to drill down into detailed stats.
+*   *(Note: Weekly heatmap removed in favor of direct metric tracking)*
 
 ### Workout Logger
 *   **Focus**: Efficiency. Large touch targets.
