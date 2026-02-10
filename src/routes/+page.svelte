@@ -4,36 +4,61 @@
   import { goto } from '$app/navigation';
   import { base } from '$app/paths';
   import { v4 as uuidv4 } from 'uuid';
-  import { onDestroy } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
+  import { initializeAuth, signIn as googleSignIn, authState, getUserInfo } from '$lib/auth';
 
   let isAuthenticated = $state(false);
+  let userName = $state('User');
 
-  const unsubscribe = store.subscribe(() => {
+  const unsubscribeStore = store.subscribe(() => {
     const state = store.getState();
     isAuthenticated = state.workout.isAuthenticated;
+    if (state.workout.user) {
+        userName = state.workout.user.name;
+    }
+  });
+
+  onMount(() => {
+      const unsubscribeAuth = authState.subscribe(async (state) => {
+          if (state.token) {
+              const user = await getUserInfo();
+              if (user) {
+                  store.dispatch(processEvent({
+                      type: 'auth/login',
+                      payload: {
+                          user: {
+                              id: user.id || user.email, // Fallback if sub missing
+                              name: user.name,
+                              email: user.email
+                          },
+                          timestamp: new Date().toISOString()
+                      }
+                  }));
+              }
+          }
+      });
+
+      initializeAuth((token) => {
+          console.log('Auth Initialized', token);
+      });
+
+      return () => {
+          unsubscribeAuth();
+      };
   });
 
   onDestroy(() => {
-    unsubscribe();
+    unsubscribeStore();
   });
 
   function signIn() {
-    // Mock Sign In
-    store.dispatch(processEvent({
-      type: 'auth/login',
-      payload: {
-        user: {
-          id: 'test-user',
-          name: 'Test User',
-          email: 'test@example.com'
-        },
-        timestamp: new Date().toISOString()
-      }
-    }));
+    googleSignIn();
   }
 
   function startWorkout() {
-    const workoutId = isAuthenticated && store.getState().workout.isAuthenticated ? 'test-workout-id' : uuidv4();
+    // Deterministic UUID for E2E tests, Real UUID for Production/Preview
+    const workoutId = (window as any).__TEST_MODE__ ? 'test-workout-id' : uuidv4();
+    
     store.dispatch(processEvent({
       type: 'workout/start',
       payload: {
@@ -60,7 +85,7 @@
     </div>
   {:else}
     <div class="dashboard-container">
-      <p>Welcome, Test User</p>
+      <p>Welcome, {userName}</p>
       <button on:click={startWorkout} data-testid="start-workout-btn">
         Start Workout
       </button>
