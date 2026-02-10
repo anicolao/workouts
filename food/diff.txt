@@ -1,0 +1,117 @@
+diff --git a/src/lib/components/ui/LogSheet.svelte b/src/lib/components/ui/LogSheet.svelte
+index a0dfd77..f65aed5 100644
+--- a/src/lib/components/ui/LogSheet.svelte
++++ b/src/lib/components/ui/LogSheet.svelte
+@@ -11,9 +11,15 @@
+ </script>
+ 
+ {#if open}
++    <!-- svelte-ignore a11y_click_events_have_key_events -->
++    <!-- svelte-ignore a11y_no_static_element_interactions -->
+     <div class="backdrop" onclick={onClose} transition:fly={{ duration: 200, opacity: 0 }}>
+         <!-- Stop propagation on content click to prevent closing -->
++        <!-- svelte-ignore a11y_click_events_have_key_events -->
++        <!-- svelte-ignore a11y_no_static_element_interactions -->
+         <div class="sheet glass-panel" onclick={(e) => e.stopPropagation()} transition:fly={{ y: 300, duration: 300 }}>
++            <!-- svelte-ignore a11y_click_events_have_key_events -->
++            <!-- svelte-ignore a11y_no_static_element_interactions -->
+             <div class="handle-bar" onclick={onClose}>
+                 <div class="handle"></div>
+             </div>
+diff --git a/src/lib/components/ui/MacroBubble.svelte b/src/lib/components/ui/MacroBubble.svelte
+index 08200d8..ebdb0d7 100644
+--- a/src/lib/components/ui/MacroBubble.svelte
++++ b/src/lib/components/ui/MacroBubble.svelte
+@@ -16,8 +16,8 @@
+     const strokeWidth = 4;
+     const radius = (size - strokeWidth) / 2;
+     const circumference = 2 * Math.PI * radius;
+-    const progress = Math.min(Math.max(value / max, 0), 1);
+-    const dashOffset = circumference * (1 - progress);
++    const progress = $derived(Math.min(Math.max(value / max, 0), 1));
++    const dashOffset = $derived(circumference * (1 - progress));
+ </script>
+ 
+ <div class="macro-bubble">
+diff --git a/src/lib/components/ui/MobileNav.svelte b/src/lib/components/ui/MobileNav.svelte
+index 28c8332..835174f 100644
+--- a/src/lib/components/ui/MobileNav.svelte
++++ b/src/lib/components/ui/MobileNav.svelte
+@@ -16,7 +16,7 @@
+     </div>
+ 
+     <div class="fab-container">
+-        <a href="{base}/log" class="fab">
++        <a href="{base}/log" class="fab" aria-label="Log new food entry">
+             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+         </a>
+     </div>
+diff --git a/src/routes/log/+page.svelte b/src/routes/log/+page.svelte
+index 3b1cadd..fc1ae73 100644
+--- a/src/routes/log/+page.svelte
++++ b/src/routes/log/+page.svelte
+@@ -12,8 +12,8 @@
+   
+   import LogSheet from '$lib/components/ui/LogSheet.svelte';
+ 
+-  let fileInput: HTMLInputElement;
+-  let videoElement: HTMLVideoElement;
++  let fileInput = $state<HTMLInputElement>();
++  let videoElement = $state<HTMLVideoElement>();
+   let stream: MediaStream | null = null;
+   let showCamera = $state(false);
+ 
+@@ -367,7 +367,7 @@
+         <div class="camera-ui">
+              <video bind:this={videoElement} autoplay playsinline muted></video>
+              <div class="cam-controls">
+-                 <button class="cam-btn capture" onclick={capturePhoto}></button>
++                 <button class="cam-btn capture" onclick={capturePhoto} aria-label="Capture photo"></button>
+                  <button class="cam-btn cancel" onclick={stopCamera}>Cancel</button>
+              </div>
+         </div>
+diff --git a/tests/e2e/001-auth/screenshots/000-initial-load.png b/tests/e2e/001-auth/screenshots/000-initial-load.png
+index 6c06eeb..460982d 100644
+Binary files a/tests/e2e/001-auth/screenshots/000-initial-load.png and b/tests/e2e/001-auth/screenshots/000-initial-load.png differ
+diff --git a/tests/e2e/001-auth/screenshots/001-authenticated.png b/tests/e2e/001-auth/screenshots/001-authenticated.png
+index 715ce62..d046a24 100644
+Binary files a/tests/e2e/001-auth/screenshots/001-authenticated.png and b/tests/e2e/001-auth/screenshots/001-authenticated.png differ
+diff --git a/tests/e2e/001-auth/screenshots/002-signed-out.png b/tests/e2e/001-auth/screenshots/002-signed-out.png
+index 6c06eeb..460982d 100644
+Binary files a/tests/e2e/001-auth/screenshots/002-signed-out.png and b/tests/e2e/001-auth/screenshots/002-signed-out.png differ
+diff --git a/tests/e2e/002-log-food/screenshots/000-log-page.png b/tests/e2e/002-log-food/screenshots/000-log-page.png
+index df7e4be..33136c1 100644
+Binary files a/tests/e2e/002-log-food/screenshots/000-log-page.png and b/tests/e2e/002-log-food/screenshots/000-log-page.png differ
+diff --git a/tests/e2e/002-log-food/screenshots/001-preview.png b/tests/e2e/002-log-food/screenshots/001-preview.png
+index 622d910..6fbfc2c 100644
+Binary files a/tests/e2e/002-log-food/screenshots/001-preview.png and b/tests/e2e/002-log-food/screenshots/001-preview.png differ
+diff --git a/tests/e2e/002-log-food/screenshots/002-analysis.png b/tests/e2e/002-log-food/screenshots/002-analysis.png
+index c271d6a..63dfc1a 100644
+Binary files a/tests/e2e/002-log-food/screenshots/002-analysis.png and b/tests/e2e/002-log-food/screenshots/002-analysis.png differ
+diff --git a/tests/e2e/002-log-food/screenshots/003-edited.png b/tests/e2e/002-log-food/screenshots/003-edited.png
+index c8f33ed..26ed942 100644
+Binary files a/tests/e2e/002-log-food/screenshots/003-edited.png and b/tests/e2e/002-log-food/screenshots/003-edited.png differ
+diff --git a/tests/e2e/002-log-food/screenshots/004-saved.png b/tests/e2e/002-log-food/screenshots/004-saved.png
+index c48ef33..6ea6ffd 100644
+Binary files a/tests/e2e/002-log-food/screenshots/004-saved.png and b/tests/e2e/002-log-food/screenshots/004-saved.png differ
+diff --git a/tests/e2e/003-stats/screenshots/000-stats-loaded.png b/tests/e2e/003-stats/screenshots/000-stats-loaded.png
+index 20ffb0c..7cbd502 100644
+Binary files a/tests/e2e/003-stats/screenshots/000-stats-loaded.png and b/tests/e2e/003-stats/screenshots/000-stats-loaded.png differ
+diff --git a/tests/e2e/004-smart-dates/screenshots/000-smart-dates.png b/tests/e2e/004-smart-dates/screenshots/000-smart-dates.png
+index 0ce9667..7393d9d 100644
+Binary files a/tests/e2e/004-smart-dates/screenshots/000-smart-dates.png and b/tests/e2e/004-smart-dates/screenshots/000-smart-dates.png differ
+diff --git a/tests/e2e/005-details-edit-delete/screenshots/000-details-view.png b/tests/e2e/005-details-edit-delete/screenshots/000-details-view.png
+index ce0456b..aa79862 100644
+Binary files a/tests/e2e/005-details-edit-delete/screenshots/000-details-view.png and b/tests/e2e/005-details-edit-delete/screenshots/000-details-view.png differ
+diff --git a/tests/e2e/005-details-edit-delete/screenshots/001-edited-state.png b/tests/e2e/005-details-edit-delete/screenshots/001-edited-state.png
+index c854795..fce3e69 100644
+Binary files a/tests/e2e/005-details-edit-delete/screenshots/001-edited-state.png and b/tests/e2e/005-details-edit-delete/screenshots/001-edited-state.png differ
+diff --git a/tests/e2e/005-details-edit-delete/screenshots/002-deleted-state.png b/tests/e2e/005-details-edit-delete/screenshots/002-deleted-state.png
+index 715ce62..d046a24 100644
+Binary files a/tests/e2e/005-details-edit-delete/screenshots/002-deleted-state.png and b/tests/e2e/005-details-edit-delete/screenshots/002-deleted-state.png differ
+diff --git a/tests/e2e/006-auth-persistence/screenshots/000-persisted.png b/tests/e2e/006-auth-persistence/screenshots/000-persisted.png
+index 715ce62..d046a24 100644
+Binary files a/tests/e2e/006-auth-persistence/screenshots/000-persisted.png and b/tests/e2e/006-auth-persistence/screenshots/000-persisted.png differ
+diff --git a/tests/e2e/006-auth-persistence/screenshots/001-expiry.png b/tests/e2e/006-auth-persistence/screenshots/001-expiry.png
+index 6c06eeb..460982d 100644
+Binary files a/tests/e2e/006-auth-persistence/screenshots/001-expiry.png and b/tests/e2e/006-auth-persistence/screenshots/001-expiry.png differ

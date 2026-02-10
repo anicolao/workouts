@@ -1,0 +1,51 @@
+name: E2E Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  e2e-tests:
+    name: Playwright E2E Tests
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        id: playwright
+        run: npm run test:e2e
+        env:
+          CI: true
+          # Provide dummy values for build/runtime to succeed
+          VITE_GOOGLE_API_KEY: "dummy"
+          VITE_GOOGLE_CLIENT_ID: "dummy"
+          VITE_GOOGLE_DRIVE_CLIENT_ID: "dummy"
+          VITE_GOOGLE_DRIVE_FOLDER_ID: "dummy"
+          VITE_GOOGLE_PHOTOS_CLIENT_ID: "dummy"
+          COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

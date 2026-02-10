@@ -1,0 +1,9 @@
+This is the beginnings of a food logging app. It's looking pretty good, but there are a fwe things missing:
+
+- I'd like dates/times in the food log to use an ever-less-abbreviated format. Dates that are today can just have the time. Yesterday can say "Yesterday @ TIME". Dates that are within the last week can just have the day of the week "Monday @ TIME" for example. Dates that are before that should be "Mon, Jan X". Dates that are from prior years should say the year as well.
+
+- I'd like to be taken to a food details screen if I tap on a log. I should there be either able to edit the log, reanalyze with the AI, or delete the log entry (which puts it in the trash from which it can be recovered).
+
+Write a design doc for these features INCREMENT_001.md. Do not write any code yet. Define the user stories clearly in the design doc. Review all existing documentation for examples of how things are meant to be set up for this project.
+
+Record all this work as a PR on the project, on its own branch, and with this prompt included verbatim in the PR description.
