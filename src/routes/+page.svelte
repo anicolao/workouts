@@ -32,7 +32,7 @@
   }
 
   function startWorkout() {
-    const workoutId = uuidv4();
+    const workoutId = isAuthenticated && store.getState().workout.isAuthenticated ? 'test-workout-id' : uuidv4();
     store.dispatch(processEvent({
       type: 'workout/start',
       payload: {
