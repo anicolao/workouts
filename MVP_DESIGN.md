@@ -67,13 +67,19 @@ This sheet is designed for the user to view and manage their available exercises
 *   **Bottom**: "See Full Analytics" button to drill down into detailed stats.
 *   *(Note: Weekly heatmap removed in favor of direct metric tracking)*
 
+![Dashboard Mockup](assets/images/dashboard.png)
+
 ### Workout Logger
 *   **Focus**: Efficiency. Large touch targets.
 *   **Header**: Session Timer and Current Exercise Name.
 *   **List**: Previous sets for the current session.
-*   **Input**: Row of inputs for `Weight (kg)`, `Reps`, `RPE`.
+*   **Input**: Row of inputs for `Weight (kg)`, `Reps`, `RPE`, with a checkbox to mark as done.
 *   **Actions**: Large "Log Set" button. "Next Exercise" button.
+
+![Logger Mockup](assets/images/logger.png)
 
 ### Analytics
 *   **Chart**: Line graph of Estimated 1RM for selected exercise.
 *   **Data**: Clean, glowing line chart against dark background.
+
+![Analytics Mockup](assets/images/analytics.png)
