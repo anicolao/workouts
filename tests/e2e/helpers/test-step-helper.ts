@@ -19,7 +19,11 @@ export class TestStepHelper {
     async step(name: string, options: { description: string; verifications: { spec: string; check: () => Promise<void> }[] }) {
         const stepIndex = this.stepCount++;
         const screenshotName = `${String(stepIndex).padStart(3, '0')}-${name}.png`;
-        const screenshotPath = path.join(this.testInfo.outputDir, screenshotName);
+        const screenshotDir = path.join(this.testInfo.outputDir, 'screenshots');
+        if (!fs.existsSync(screenshotDir)) {
+            fs.mkdirSync(screenshotDir, { recursive: true });
+        }
+        const screenshotPath = path.join(screenshotDir, screenshotName);
 
         // 1. Perform Verifications
         for (const verification of options.verifications) {
