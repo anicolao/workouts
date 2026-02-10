@@ -18,6 +18,8 @@ test('User signs in and starts a workout session', async ({ page }, testInfo) =>
 
     await page.getByTestId('sign-in-btn').click();
 
+    await page.waitForSelector('[data-testid="start-workout-btn"]');
+
     await tester.step('signed-in', {
         description: 'User is signed in and sees dashboard',
         verifications: [
