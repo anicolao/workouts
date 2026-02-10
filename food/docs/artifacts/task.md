@@ -1,0 +1,30 @@
+# Task Checklist
+
+- [x] Research Best Practices <!-- id: 0 -->
+- [x] Initialize `food` Repository <!-- id: 6 -->
+- [x] Refine Project Setup <!-- id: 18 -->
+- [x] Design MVP <!-- id: 26 -->
+- [ ] Implement MVP <!-- id: 34 -->
+    - [x] Create Implementation Plan <!-- id: 35 -->
+    - [x] Initialize SvelteKit & Bun <!-- id: 36 -->
+    - [x] Setup Redux Event Store <!-- id: 37 -->
+    - [x] Implement Authentication (Google) <!-- id: 38 -->
+    - [x] Implement Logging UI (Camera/Upload) <!-- id: 39 -->
+    - [x] Implement Gemini Integration <!-- id: 40 -->
+    - [x] Implement Google Sheets/Drive Integration <!-- id: 41 -->
+    - [x] Create `MANUAL_TESTING.md` <!-- id: 42 -->
+    - [x] Implement E2E Tests (US-001 to US-012) <!-- id: 43 -->
+    - [x] Implement E2E Tests (US-001 to US-012) <!-- id: 43 -->
+    - [x] Verify & Submit PR <!-- id: 44 -->
+    - [x] Refine Log UI (Split Camera/Upload) (US-003, US-004) <!-- id: 48 -->
+    - [x] Implement Time-Based Meal Type Default (US-008) <!-- id: 49 -->
+    - [x] Add Drive Folder Link (US-010) <!-- id: 50 -->
+    - [x] Verify Refined UX <!-- id: 51 -->
+    - [x] Fix Auth Client ID (Env Mismatch) <!-- id: 52 -->
+    - [x] Refactor Gemini to use User OAuth (Billing) <!-- id: 53 -->
+    - [x] Verify Gemini Auth Flow <!-- id: 54 -->
+    - [x] Implement Per-User Data Discovery (Drive/Sheets) <!-- id: 55 -->
+    - [x] Verify Per-User Flow (E2E + Manual) <!-- id: 56 -->
+    - [x] Implement In-App Camera UI (getUserMedia) <!-- id: 57 -->
+    - [x] Implement Google Photos Picker Integration <!-- id: 58 -->
+    - [x] Verify Photo Handling Improvements <!-- id: 59 -->
