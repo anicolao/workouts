@@ -38,7 +38,7 @@ export default defineConfig({
     projects: [
         {
             name: 'chromium',
-            use: { ...devices['Desktop Chrome'], browserName: 'chromium' },
+            use: { browserName: 'chromium' },
         },
     ],
     webServer: {

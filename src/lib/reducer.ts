@@ -31,6 +31,16 @@ export const workoutSlice = createSlice({
                     }
                     break;
 
+                case 'auth/login':
+                    state.isAuthenticated = true;
+                    state.user = payload.user;
+                    break;
+
+                case 'auth/logout':
+                    state.isAuthenticated = false;
+                    state.user = null;
+                    break;
+
                 case 'set/log':
                     if (state.workouts[payload.workoutId]) {
                         const newSet: WorkoutSet = {
