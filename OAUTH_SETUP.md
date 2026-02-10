@@ -24,11 +24,10 @@ The OAuth 2.0 Client ID for Google authentication and all Google services.
 6. Add authorized JavaScript origins (replace with your actual GitHub Pages URL):
    - For this repository: `https://anicolao.github.io`
    - For your fork: `https://YOUR_USERNAME.github.io`
-7. Add authorized redirect URIs (replace with your actual GitHub Pages URL):
-   - For this repository: `https://anicolao.github.io/workouts/` (and the base URL for PR previews if needed, e.g. `https://anicolao.github.io/workouts/pr3/` but wildcards aren't supported, so usually just the base domain + folder root is enough if the auth lib handles state correctly).
-   - *Note*: The auth library constructs the redirect URI dynamically based on `window.location.origin + base`. Ensure your Console config matches.
-   - For local dev: `http://localhost:5173/workouts/` (or whatever your local base is, usually just `http://localhost:5173` if running without base)
-
+   - For this repository: `https://anicolao.github.io`
+   - For your fork: `https://YOUR_USERNAME.github.io`
+7. **Note on Redirect URIs**: With the Popup UX, the "Authorized redirect URIs" setting is less critical for the sign-in flow itself, but you should still add your base production URL.
+   - For this repository: `https://anicolao.github.io/workouts/`
 8. Copy the Client ID (looks like: `123456789-abcdef.apps.googleusercontent.com`)
 
 ## Setting Up Secret in GitHub
