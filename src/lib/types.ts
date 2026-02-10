@@ -1,7 +1,15 @@
 export interface WorkoutState {
-    events: any[]; // Log of all actions
+    events: any[];
     currentWorkoutId: string | null;
-    workouts: Record<string, Workout>; // Derived state
+    workouts: Record<string, Workout>;
+    isAuthenticated: boolean;
+    user: User | null;
+}
+
+export interface User {
+    id: string;
+    name: string;
+    email: string;
 }
 
 export interface Workout {
@@ -24,4 +32,6 @@ export const initialState: WorkoutState = {
     events: [],
     currentWorkoutId: null,
     workouts: {},
+    isAuthenticated: false,
+    user: null,
 };
