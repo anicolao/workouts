@@ -175,52 +175,15 @@ export function refreshAuth(): Promise<string | null> {
 }
 
 export function signIn() {
-    const redirectUri = window.location.origin + base;
-    const returnPath = window.location.pathname + window.location.search;
-
-    const params = new URLSearchParams({
-        client_id: GOOGLE_CLIENT_ID,
-        redirect_uri: redirectUri,
-        response_type: 'token',
-        scope: SCOPES,
-        include_granted_scopes: 'true',
-        state: returnPath
-    });
-
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
-    window.location.href = authUrl;
+    if (tokenClient) {
+        tokenClient.requestAccessToken({ prompt: 'consent', scope: SCOPES });
+    } else {
+        console.error('Google Identity Services not initialized yet');
+    }
 }
 
+// Redirect callbacks are no longer needed for Popup flow
 function handleRedirectCallback(onSuccess: (token: string) => void): boolean {
-    const hash = window.location.hash;
-    if (!hash || !hash.includes('access_token')) return false;
-
-    const params = new URLSearchParams(hash.substring(1));
-    const token = params.get('access_token');
-    const expiresIn = params.get('expires_in');
-    const state = params.get('state');
-
-    if (token) {
-        accessToken = token;
-        const expiresInSeconds = expiresIn ? parseInt(expiresIn) : 3599;
-        const expiryTime = Date.now() + (expiresInSeconds * 1000);
-
-        localStorage.setItem(TOKEN_KEY, accessToken);
-        localStorage.setItem(EXPIRY_KEY, expiryTime.toString());
-
-        authState.update(s => ({ ...s, token: accessToken, ready: true }));
-        (window as any)._authReady = true;
-
-        onSuccess(accessToken);
-        scheduleRefresh(expiresInSeconds, onSuccess);
-
-        if (state && state.startsWith('/') && state !== 'pass-through-value') {
-            replaceState(state, {});
-        } else {
-            replaceState(window.location.pathname + window.location.search, {});
-        }
-        return true;
-    }
     return false;
 }
 
