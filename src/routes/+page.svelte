@@ -2,6 +2,7 @@
   import { store } from '$lib/store';
   import { processEvent } from '$lib/reducer';
   import { goto } from '$app/navigation';
+  import { base } from '$app/paths';
   import { v4 as uuidv4 } from 'uuid';
   import { onDestroy } from 'svelte';
 
@@ -40,7 +41,7 @@
         timestamp: new Date().toISOString()
       }
     }));
-    goto(`/workout/${workoutId}`);
+    goto(`${base}/workout/${workoutId}`);
   }
 </script>
 
