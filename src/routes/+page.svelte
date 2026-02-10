@@ -3,11 +3,17 @@
   import { processEvent } from '$lib/reducer';
   import { goto } from '$app/navigation';
   import { v4 as uuidv4 } from 'uuid';
+  import { onDestroy } from 'svelte';
 
   let isAuthenticated = false;
 
-  store.subscribe(state => {
+  const unsubscribe = store.subscribe(() => {
+    const state = store.getState();
     isAuthenticated = state.workout.isAuthenticated;
+  });
+
+  onDestroy(() => {
+    unsubscribe();
   });
 
   function signIn() {
