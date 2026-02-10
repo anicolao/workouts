@@ -46,6 +46,7 @@ jobs:
         run: npm run build
         env:
           PUBLIC_BASE_PATH: ${{ steps.base_path.outputs.path }}
+          VITE_GOOGLE_OAUTH_ID: ${{ secrets.GOOGLE_OAUTH_ID }}
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
