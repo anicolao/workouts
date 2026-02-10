@@ -1,14 +1,23 @@
-# MVP Design and Mockups
+# v0 Implementation: Start Workout & Event Sourcing
 
 ## User Prompt
-Write an MVP_DESIGN.md that specifies the initial feature set for our strength training workout tracker. Use image generation to create mockups of what our workout tracker should look like adn define the user stories that we'll have in the MVP.
+OK we rebased and merged this pr. switch back to main, pull, and write a v0 of the appliation that includes at least one e2e test to validate the functionalty that you choose to include for this initial cut.            Also write a REDUX_ACTIONS.md that details every action that the user can take in this MVP that will be stored in the internal spreadsheet. Make sure the test runner on github users macos so that the screenshots will obey the 0-tolerance rules, and write appropriate unit tests for the reducer.
 
 ## User Comments
-Three pieces of feedback:
-#1 - we want to use multiple spreadsheets so that the user can easily distinguish between what they may edit and what's internal.
-#2 - we really require screenshots. You'll need to succeed at using image generation to prouduce mockups.
-#3 - we're not sure about the weekly heatmap. Maybe move the Analytics into the dashboard for key metrics.
+(None)
 
-> [!NOTE]
-> Mockups have been generated and embedded in `MVP_DESIGN.md`.
-> The architecture has been updated to use `InternalEventLog` and `Exercise Catalog` spreadsheets.
+## Changes
+-   **Scaffolding**: Initialized SvelteKit project with Redux and Playwright.
+-   **Architecture**: Implemented Event Sourcing pattern with `InternalEventLog` logic in Redux.
+-   **Feature**: "Start Workout" flow (Dashboard -> Active Workout).
+-   **Testing**:
+    -   Unit tests for Redux reducer.
+    -   E2E tests for "Start Workout" flow using `TestStepHelper`.
+    -   CI workflow for macOS.
+-   **Documentation**:
+    -   `REDUX_ACTIONS.md`: Documented MVP actions.
+    -   `walkthrough.md`: Overview of changes.
+
+## Verification
+-   `npm run test:unit`: Passed locally.
+-   `npx playwright test`: Passed locally.
