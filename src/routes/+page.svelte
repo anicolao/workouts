@@ -5,7 +5,7 @@
   import { v4 as uuidv4 } from 'uuid';
   import { onDestroy } from 'svelte';
 
-  let isAuthenticated = false;
+  let isAuthenticated = $state(false);
 
   const unsubscribe = store.subscribe(() => {
     const state = store.getState();

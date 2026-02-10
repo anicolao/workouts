@@ -7,6 +7,7 @@ test('User signs in and starts a workout session', async ({ page }, testInfo) =>
     tester.setMetadata('Start Workout', 'As a user, I want to sign in and start a new workout session.');
 
     // 2. Perform Action & Verify
+    page.on('console', msg => console.log(`BROWSER LOG: ${msg.text()}`));
     await page.goto('/');
     await tester.step('initial-load', {
         description: 'Sign In button is visible',
