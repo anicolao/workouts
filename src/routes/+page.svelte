@@ -17,6 +17,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>Workouts</title>
+</svelte:head>
+
 <main>
   <h1>Workouts</h1>
   <button on:click={startWorkout} data-testid="start-workout-btn">

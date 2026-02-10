@@ -19,30 +19,26 @@ export class TestStepHelper {
     async step(name: string, options: { description: string; verifications: { spec: string; check: () => Promise<void> }[] }) {
         const stepIndex = this.stepCount++;
         const screenshotName = `${String(stepIndex).padStart(3, '0')}-${name}.png`;
-        const screenshotDir = path.join(this.testInfo.outputDir, 'screenshots');
-        if (!fs.existsSync(screenshotDir)) {
-            fs.mkdirSync(screenshotDir, { recursive: true });
-        }
-        const screenshotPath = path.join(screenshotDir, screenshotName);
 
         // 1. Perform Verifications
         for (const verification of options.verifications) {
             await verification.check();
         }
 
-        // 2. Capture Screenshot
-        await this.page.screenshot({ path: screenshotPath, fullPage: true });
+        // 2. Capture & Verify (Zero-Pixel Tolerance)
+        // This will check against the baseline in 'screenshots/{filename}'.
+        await expect(this.page).toHaveScreenshot(screenshotName);
 
         // 3. Document
         this.documentation.push(`## Step ${stepIndex}: ${options.description}`);
-        this.documentation.push(`![Screenshot](${screenshotName})`);
+        this.documentation.push(`![Screenshot](./screenshots/${screenshotName})`);
         this.documentation.push(`\n**Verifications:**`);
         options.verifications.forEach(v => this.documentation.push(`- [x] ${v.spec}`));
         this.documentation.push('\n---\n');
     }
 
     generateDocs() {
-        const docPath = path.join(this.testInfo.outputDir, 'README.md');
+        const docPath = path.join(path.dirname(this.testInfo.file), 'README.md');
         fs.writeFileSync(docPath, this.documentation.join('\n'));
     }
 }
