@@ -10,7 +10,13 @@ export default defineConfig({
     use: {
         fontRenderHinting: 'none',
         launchOptions: {
-            args: ['--disable-gpu', '--font-render-hinting=none'],
+            args: [
+                '--disable-gpu',
+                '--font-render-hinting=none',
+                '--disable-skia-runtime-opts',
+                '--disable-font-subpixel-positioning',
+                '--disable-lcd-text',
+            ],
         },
         trace: 'on-first-retry',
     },
