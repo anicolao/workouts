@@ -19,6 +19,6 @@
 		width: 100vw;
 		height: 100vh;
 		overflow: hidden;
-		font-family: sans-serif;
+		font-family: 'Inter', sans-serif;
 	}
 </style>
