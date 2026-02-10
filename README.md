@@ -1,37 +1,42 @@
-# Workout Tracker (Project Name TBD)
+# sv
 
-A privacy-centric, open-source workout tracker built on Google Drive and Google Sheets.
+Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
-## 🚀 Features
+## Creating a project
 
-- **Data Ownership**: Your workout data lives in your Google Sheets. We don't store it.
-- **Privacy First**: No tracking, no ads, no selling your data.
-- **Fully Customizable**: Add custom exercises, metrics, and programs directly in your spreadsheet.
-- **Progress Tracking**: Visualize your strength gains and consistency over time.
-- **Mobile Friendly**: Designed for ease of use while at the gym.
+If you're seeing this, you've probably already done this step. Congrats!
 
-## 🛠 Tech Stack
+```sh
+# create a new project
+npx sv create my-app
+```
 
-- **Frontend**: Svelte 5 + Vite
-- **Storage**: Google Drive API & Google Sheets API
-- **State Management**: Redux Toolkit
-- **Database**: IndexedDB (via idb)
-- **AI**: Google Generative AI
-- **Authentication**: Google OAuth (Client-side only)
+To recreate this project with the same configuration:
 
-## 🏃 Getting Started
+```sh
+# recreate this project
+npx sv create --template minimal --types ts --no-install .
+```
 
-### Prerequisites
-1. A Google Account.
-2. A Google Cloud Console project with Drive and Sheets APIs enabled.
+## Developing
 
-### Installation
-(Instructions to be added)
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
-## 🤝 Contributing
+```sh
+npm run dev
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
 
-## 📄 License
+## Building
 
-GPLv3
+To create a production version of your app:
+
+```sh
+npm run build
+```
+
+You can preview the production build with `npm run preview`.
+
+> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
