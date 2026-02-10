@@ -1,7 +1,7 @@
-# Adopt 'food' Project Workflow
+# MVP Design and Mockups
 
 ## User Prompt
-I want to copy the style of development that we used for the food project. In particular, I want an almost carbon copy of the e2e process and the WORKFLOW.md process. Read food/WORKFLOW.md, replicate it, and add in the e2e guidelines and anything else you might need to develop this project in a similar style............ Then follow WORKFLOW.md to create a PR for that.
+Write an MVP_DESIGN.md that specifies the initial feature set for our strength training workout tracker. Use image generation to create mockups of what our workout tracker should look like adn define the user stories that we'll have in the MVP.
 
 ## User Comments
-Let's fix the licence first, I missed that it said MIT, we want GPLv3, rewrite history to say that and use gh to set the licence on the repository.
+(Image generation service was unavailable, so text descriptions are provided instead.)
