@@ -1,5 +1,17 @@
 # Development Standards
 
+## Configuration
+
+### OAuth Setup
+
+The application requires a Google OAuth Client ID.
+
+1.  **Google Cloud Console**: Create a project and OAuth 2.0 Client ID (Web application).
+2.  **Origins**: Add `http://localhost:5173` and your GitHub Pages domain.
+3.  **Redirect URIs**: Add `http://localhost:5173` and `https://<user>.github.io/workouts/`.
+4.  **GitHub Secret**: Add `GOOGLE_OAUTH_ID` to repository secrets.
+5.  **Local Dev**: Add `VITE_GOOGLE_OAUTH_ID=your-client-id` to `.env`.
+
 ## Technology Stack
 
 -   **Frontend**: SvelteKit (Svelte 5)
