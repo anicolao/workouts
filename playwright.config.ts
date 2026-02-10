@@ -8,22 +8,37 @@ export default defineConfig({
     workers: process.env.CI ? 1 : undefined,
     reporter: 'html',
     use: {
-        fontRenderHinting: 'none',
+        baseURL: 'http://localhost:5173',
+        trace: 'on-first-retry',
         launchOptions: {
             args: [
-                '--disable-gpu',
                 '--font-render-hinting=none',
-                '--disable-skia-runtime-opts',
                 '--disable-font-subpixel-positioning',
                 '--disable-lcd-text',
+                '--disable-skia-runtime-opts',
+                '--disable-system-font-check',
+                '--disable-features=FontAccess,WebRtcHideLocalIpsWithMdns',
+                '--force-device-scale-factor=1',
+                '--disable-accelerated-2d-canvas',
+                '--disable-gpu',
+                '--use-gl=swiftshader',
+                '--disable-smooth-scrolling',
             ],
         },
-        trace: 'on-first-retry',
+        viewport: { width: 393, height: 852 },
+        deviceScaleFactor: 1,
+        timezoneId: 'America/New_York',
+        locale: 'en-CA',
+    },
+    snapshotPathTemplate: '{testDir}/{testFileDir}/screenshots/{arg}.png',
+    expect: {
+        timeout: 5000,
+        toHaveScreenshot: { maxDiffPixels: 0 }
     },
     projects: [
         {
             name: 'chromium',
-            use: { ...devices['Desktop Chrome'] },
+            use: { ...devices['Desktop Chrome'], browserName: 'chromium' },
         },
     ],
     webServer: {
