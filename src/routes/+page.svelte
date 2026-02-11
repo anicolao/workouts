@@ -20,6 +20,7 @@
   });
 
   onMount(() => {
+      (window as any).store = store;
       const unsubscribeAuth = authState.subscribe(async (state) => {
           isAuthReady = state.ready;
           if (state.token) {
@@ -33,7 +34,8 @@
                               name: user.name,
                               email: user.email
                           },
-                          timestamp: new Date().toISOString()
+                          timestamp: new Date().toISOString(),
+                          accessToken: state.token
                       }
                   }));
               }

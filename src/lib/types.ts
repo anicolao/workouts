@@ -5,6 +5,9 @@ export interface WorkoutState {
     exercises: Record<string, Exercise>;
     isAuthenticated: boolean;
     user: User | null;
+    accessToken: string | null;
+    syncStatus: 'idle' | 'syncing' | 'error';
+    lastSync: string | null;
 }
 
 export interface User {
@@ -43,4 +46,7 @@ export const initialState: WorkoutState = {
     exercises: {},
     isAuthenticated: false,
     user: null,
+    accessToken: null,
+    syncStatus: 'idle',
+    lastSync: null,
 };
