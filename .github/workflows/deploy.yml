@@ -47,6 +47,7 @@ jobs:
         env:
           PUBLIC_BASE_PATH: ${{ steps.base_path.outputs.path }}
           VITE_GOOGLE_OAUTH_ID: ${{ secrets.GOOGLE_OAUTH_ID }}
+          COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
