@@ -174,12 +174,10 @@ export async function initializeAndSync(accessToken: string) {
 
         actions.forEach((entry: ActionLogEntry) => {
             // Dispatch with replay meta to avoid re-logging
+            // entry.payload is already the AppEvent { type, payload } object
             store.dispatch({
-                type: 'workout/processEvent', // Use the slice name correct action type
-                payload: {
-                    type: entry.actionType,
-                    payload: entry.payload
-                },
+                type: 'workout/processEvent',
+                payload: entry.payload,
                 meta: { replay: true }
             });
         });
