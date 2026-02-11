@@ -42,7 +42,37 @@ test('Config Sync: Creates sheet and syncs exercises', async ({ page }, testInfo
     await page.route('https://sheets.googleapis.com/v4/spreadsheets', async route => {
         const body = route.request().postDataJSON();
         createdSheetId = 'new-sheet-id';
-        await route.fulfill({ json: { spreadsheetId: createdSheetId } });
+        // Return sheets array to simulate successful creation
+        await route.fulfill({
+            json: {
+                spreadsheetId: createdSheetId,
+                sheets: [
+                    { properties: { title: 'Instructions' } },
+                    { properties: { title: 'Exercise Catalog' } }
+                ]
+            }
+        });
+    });
+
+    // Mock Get Spreadsheet (for checking tabs)
+    await page.route('https://sheets.googleapis.com/v4/spreadsheets/*', async route => {
+        if (route.request().method() === 'GET') {
+            await route.fulfill({
+                json: {
+                    sheets: [
+                        { properties: { title: 'Instructions' } },
+                        { properties: { title: 'Exercise Catalog' } }
+                    ]
+                }
+            });
+        } else {
+            await route.continue();
+        }
+    });
+
+    // Mock Batch Update (Add Sheet)
+    await page.route('https://sheets.googleapis.com/v4/spreadsheets/*:batchUpdate', async route => {
+        await route.fulfill({ json: {} });
     });
 
     // Mock Move to Folder
