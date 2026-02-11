@@ -42,17 +42,22 @@ export const workoutSlice = createSlice({
                     break;
 
                 case 'set/log':
-                    if (state.workouts[payload.workoutId]) {
+                    if (state.workouts[action.payload.workoutId]) {
                         const newSet: WorkoutSet = {
-                            id: payload.setId,
-                            exerciseName: payload.exerciseName,
-                            weight: payload.weight,
-                            reps: payload.reps,
-                            rpe: payload.rpe,
-                            timestamp: payload.timestamp,
+                            id: action.payload.setId,
+                            exerciseName: action.payload.exerciseName,
+                            weight: action.payload.weight,
+                            reps: action.payload.reps,
+                            rpe: action.payload.rpe,
+                            timestamp: action.payload.timestamp,
                         };
-                        state.workouts[payload.workoutId].sets.push(newSet);
+                        state.workouts[action.payload.workoutId].sets.push(newSet);
                     }
+                    break;
+
+                case 'exercise/upsert':
+                    if (!state.exercises) state.exercises = {};
+                    state.exercises[action.payload.name] = action.payload;
                     break;
             }
         },
