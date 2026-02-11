@@ -47,7 +47,19 @@ const INSTRUCTIONS_CONTENT = [
 
 // ensureWorkoutsFolder is imported from ./drive-utils
 
-export async function ensureConfigSheet(accessToken: string): Promise<string | null> {
+let ensureConfigPromise: Promise<string | null> | null = null;
+
+export function ensureConfigSheet(accessToken: string): Promise<string | null> {
+    if (!ensureConfigPromise) {
+        ensureConfigPromise = _ensureConfigSheet(accessToken).catch(e => {
+            ensureConfigPromise = null;
+            throw e;
+        });
+    }
+    return ensureConfigPromise;
+}
+
+async function _ensureConfigSheet(accessToken: string): Promise<string | null> {
     try {
         const folderId = await ensureWorkoutsFolder(accessToken);
         if (!folderId) return null;

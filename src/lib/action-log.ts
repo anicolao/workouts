@@ -11,7 +11,19 @@ export interface ActionLogEntry {
     payload: any;
 }
 
-export async function ensureActionLogSheet(accessToken: string): Promise<string | null> {
+let ensureLogPromise: Promise<string | null> | null = null;
+
+export function ensureActionLogSheet(accessToken: string): Promise<string | null> {
+    if (!ensureLogPromise) {
+        ensureLogPromise = _ensureActionLogSheet(accessToken).catch(e => {
+            ensureLogPromise = null;
+            throw e;
+        });
+    }
+    return ensureLogPromise;
+}
+
+async function _ensureActionLogSheet(accessToken: string): Promise<string | null> {
     try {
         const folderId = await ensureWorkoutsFolder(accessToken);
         if (!folderId) return null;
