@@ -203,14 +203,24 @@ export async function syncConfig(accessToken: string) {
             let isDifferent = true;
 
             if (current) {
-                const tagsMatch = current.tags.length === data.tags.length &&
-                    current.tags.every((t: string, i: number) => t === data.tags[i]);
+                const sheetTags = [...data.tags].sort();
+                const currentTags = [...current.tags].sort();
+
+                const tagsMatch = currentTags.length === sheetTags.length &&
+                    currentTags.every((t: string, i: number) => t === sheetTags[i]);
 
                 if (current.muscleGroup === data.muscleGroup &&
                     current.defaultRpe === data.defaultRpe &&
                     tagsMatch) {
                     isDifferent = false;
+                } else {
+                    console.log(`Diff for ${name}:`);
+                    if (current.muscleGroup !== data.muscleGroup) console.log(`  Muscle: ${current.muscleGroup} != ${data.muscleGroup}`);
+                    if (current.defaultRpe !== data.defaultRpe) console.log(`  RPE: ${current.defaultRpe} != ${data.defaultRpe}`);
+                    if (!tagsMatch) console.log(`  Tags: ${JSON.stringify(currentTags)} != ${JSON.stringify(sheetTags)}`);
                 }
+            } else {
+                console.log(`New exercise found: ${name}`);
             }
 
             if (isDifferent) {
