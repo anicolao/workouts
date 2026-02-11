@@ -71,23 +71,35 @@ export async function ensureConfigSheet(accessToken: string): Promise<string | n
         const folderId = await ensureWorkoutsFolder(accessToken);
         if (!folderId) return null;
 
-        // 1. Search for existing spreadsheet in the folder
-        const searchUrl = `https://www.googleapis.com/drive/v3/files?q=name='${CONFIG_FILE_NAME}' and mimeType='application/vnd.google-apps.spreadsheet' and '${folderId}' in parents and trashed=false`;
+        // 1. Search for existing spreadsheet in the folder (by name OR by metadata)
+        // Note: 'name' check is for legacy/manual creates, 'appProperties' is for robustness
+        const searchQuery = `mimeType='application/vnd.google-apps.spreadsheet' and '${folderId}' in parents and trashed=false and (name='${CONFIG_FILE_NAME}' or appProperties has { key='type' and value='exercises_config' })`;
+        const searchUrl = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(searchQuery)}`;
         const searchRes = await fetch(searchUrl, { headers: { Authorization: `Bearer ${accessToken}` } });
         const searchData = await searchRes.json();
 
         let spreadsheetId: string;
+        let existingSheets: any[] = [];
 
         if (searchData.files && searchData.files.length > 0) {
             spreadsheetId = searchData.files[0].id;
             console.log(`Found existing config sheet: ${spreadsheetId}`);
+
+            // Get spreadsheet details to check for tabs
+            const getRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}`, {
+                headers: { Authorization: `Bearer ${accessToken}` }
+            });
+            const getData = await getRes.json();
+            existingSheets = getData.sheets || [];
         } else {
             console.log('Creating new config sheet...');
             const createRes = await fetch('https://sheets.googleapis.com/v4/spreadsheets', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    properties: { title: CONFIG_FILE_NAME },
+                    properties: {
+                        title: CONFIG_FILE_NAME,
+                    },
                     sheets: [
                         { properties: { title: INSTRUCTIONS_TITLE } },
                         { properties: { title: SHEET_TITLE, gridProperties: { frozenRowCount: 1 } } }
@@ -96,16 +108,45 @@ export async function ensureConfigSheet(accessToken: string): Promise<string | n
             });
             const createData = await createRes.json();
             spreadsheetId = createData.spreadsheetId;
+            existingSheets = createData.sheets;
 
-            // Move to folder (add parent)
+            // Add metadata (appProperties) and move to folder
+            // We do this in a separate patch to ensure it's set on the file
             await fetch(`https://www.googleapis.com/drive/v3/files/${spreadsheetId}?addParents=${folderId}`, {
                 method: 'PATCH',
-                headers: { Authorization: `Bearer ${accessToken}` }
+                headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    appProperties: { type: 'exercises_config' }
+                })
             });
 
             // Populate Instructions
             await appendRows(accessToken, spreadsheetId, INSTRUCTIONS_TITLE, INSTRUCTIONS_CONTENT);
 
+            // Populate Defaults
+            await appendRows(accessToken, spreadsheetId, SHEET_TITLE, [HEADERS, ...DEFAULT_EXERCISES]);
+
+            // Return early since we just created everything
+            return spreadsheetId;
+        }
+
+        // Check if "Exercise Catalog" tab exists
+        const catalogSheet = existingSheets.find((s: any) => s.properties.title === SHEET_TITLE);
+        if (!catalogSheet) {
+            console.log('Exercise Catalog tab missing, recreating...');
+            await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}:batchUpdate`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    requests: [
+                        {
+                            addSheet: {
+                                properties: { title: SHEET_TITLE, gridProperties: { frozenRowCount: 1 } }
+                            }
+                        }
+                    ]
+                })
+            });
             // Populate Defaults
             await appendRows(accessToken, spreadsheetId, SHEET_TITLE, [HEADERS, ...DEFAULT_EXERCISES]);
         }
