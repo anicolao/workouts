@@ -116,3 +116,26 @@ async function _appendAction(accessToken: string, entry: ActionLogEntry) {
         console.error('Error appending action to log:', e);
     }
 }
+
+export async function getActions(accessToken: string): Promise<ActionLogEntry[]> {
+    const spreadsheetId = await ensureActionLogSheet(accessToken);
+    if (!spreadsheetId) return [];
+
+    try {
+        const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${SHEET_TITLE}!A2:D`, {
+            headers: { Authorization: `Bearer ${accessToken}` }
+        });
+        const data = await res.json();
+        const rows = data.values || [];
+
+        return rows.map((row: string[]) => ({
+            eventId: row[0],
+            timestamp: row[1],
+            actionType: row[2],
+            payload: JSON.parse(row[3])
+        }));
+    } catch (e) {
+        console.error('Error fetching action log:', e);
+        return [];
+    }
+}

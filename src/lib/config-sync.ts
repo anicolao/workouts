@@ -160,13 +160,34 @@ async function appendRows(accessToken: string, spreadsheetId: string, range: str
     });
 }
 
-export async function syncConfig(accessToken: string) {
-    console.log('Starting config sync...');
+import { getActions, type ActionLogEntry } from './action-log';
+
+export async function initializeAndSync(accessToken: string) {
+    console.log('Starting initialization and sync...');
     store.dispatch(processEvent({ type: 'sync/start', payload: { timestamp: new Date().toISOString() } }));
 
-    // ... (rest of the function)
-
     try {
+        // 1. Replay Action Log (Source of Truth)
+        console.log('Replaying action log...');
+        const actions = await getActions(accessToken);
+        console.log(`Found ${actions.length} actions to replay.`);
+
+        actions.forEach((entry: ActionLogEntry) => {
+            // Dispatch with replay meta to avoid re-logging
+            store.dispatch({
+                type: 'workout/processEvent', // Use the slice name correct action type
+                payload: {
+                    type: entry.actionType,
+                    payload: entry.payload
+                },
+                meta: { replay: true }
+            });
+        });
+        console.log('Action replay complete.');
+
+        // 2. Sync Config (Check for updates from Sheet)
+        console.log('Syncing config sheet...');
+
         const spreadsheetId = await ensureConfigSheet(accessToken);
         if (!spreadsheetId) {
             throw new Error('Could not ensure config sheet');
@@ -197,6 +218,7 @@ export async function syncConfig(accessToken: string) {
         const state = store.getState();
         // @ts-ignore
         const currentExercises = state.workout.exercises || {};
+        console.log(`Current app exercises: ${Object.keys(currentExercises).length}`);
 
         for (const [name, data] of Object.entries(sheetExercises)) {
             const current = currentExercises[name];
@@ -238,7 +260,7 @@ export async function syncConfig(accessToken: string) {
         store.dispatch(processEvent({ type: 'sync/success', payload: { timestamp: new Date().toISOString() } }));
 
     } catch (e) {
-        console.error('Error syncing config:', e);
+        console.error('Error in initialization/sync:', e);
         store.dispatch(processEvent({ type: 'sync/error', payload: { error: String(e), timestamp: new Date().toISOString() } }));
     }
 }
