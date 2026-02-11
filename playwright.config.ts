@@ -46,5 +46,10 @@ export default defineConfig({
         command: 'npm run dev -- --port 5174',
         url: 'http://localhost:5174',
         reuseExistingServer: !process.env.CI,
+        env: {
+            COMMIT_HASH: 'e2e-hash',
+            BUILD_DATE: '2023-01-01T00:00:00.000Z',
+            VITE_APP_DIRTY_FLAG: 'false' // Ensure dirty flag is false for tests
+        }
     },
 });

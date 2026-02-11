@@ -61,7 +61,7 @@
                 <span class="value-text {isOnline ? 'online' : 'offline'}">
                     {isOnline ? "Online" : "Offline"}
                 </span>
-                <img src="{base}/images/icon-status-{isOnline ? 'synced' : 'offline'}.png" alt="Connection Status" class="status-icon" />
+                <img src="{base}/images/icon-status-{isOnline ? 'synced' : 'offline'}.png" alt="Connection Status" class="status-icon neon-icon" />
             </div>
         </div>
         <div class="status-row">
@@ -71,11 +71,14 @@
                     {syncStatus === 'syncing' ? "Syncing..." : syncStatus.toUpperCase()}
                 </span>
                 {#if syncStatus === 'syncing'}
-                    <img src="{base}/images/icon-status-syncing.png" alt="Syncing" class="status-icon" />
+                    <div class="pulse-stack">
+                        <img src="{base}/images/icon-status-syncing.png" alt="Syncing" class="status-icon neon-icon base" />
+                        <img src="{base}/images/icon-status-syncing.png" alt="" class="status-icon neon-icon overlay" />
+                    </div>
                 {:else if syncStatus === 'error'}
-                    <img src="{base}/images/icon-status-error.png" alt="Error" class="status-icon" />
+                    <img src="{base}/images/icon-status-error.png" alt="Error" class="status-icon neon-icon error-glow" />
                 {:else}
-                    <img src="{base}/images/icon-status-synced.png" alt="Synced" class="status-icon" />
+                    <img src="{base}/images/icon-status-synced.png" alt="Synced" class="status-icon neon-icon" />
                 {/if}
             </div>
         </div>
@@ -197,6 +200,38 @@
         width: 24px;
         height: 24px;
         object-fit: contain;
+    }
+
+    /* Neon Icon Styling */
+    .neon-icon {
+        display: block;
+        mix-blend-mode: plus-lighter;
+    }
+
+    .pulse-stack {
+        position: relative;
+        width: 24px;
+        height: 24px;
+    }
+
+    .pulse-stack .base {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0.8;
+    }
+
+    .pulse-stack .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        mix-blend-mode: plus-lighter;
+        animation: neon-pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes neon-pulse {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 1; }
     }
 
     .value-text {
