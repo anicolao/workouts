@@ -1,23 +1,12 @@
-# v0 Implementation: Start Workout & Event Sourcing
+# Reviewed E2E Tests & Config
 
-## User Prompt
-OK we rebased and merged this pr. switch back to main, pull, and write a v0 of the appliation that includes at least one e2e test to validate the functionalty that you choose to include for this initial cut.            Also write a REDUX_ACTIONS.md that details every action that the user can take in this MVP that will be stored in the internal spreadsheet. Make sure the test runner on github users macos so that the screenshots will obey the 0-tolerance rules, and write appropriate unit tests for the reducer.
-
-## User Comments
-(None)
+## Description
+This PR addresses several issues found during a review of the E2E testing setup. It enforces stricter timeouts, fixes a race condition in the authentication flow, and optimizes test determinism.
 
 ## Changes
--   **Scaffolding**: Initialized SvelteKit project with Redux and Playwright.
--   **Architecture**: Implemented Event Sourcing pattern with `InternalEventLog` logic in Redux.
--   **Feature**: "Start Workout" flow (Dashboard -> Active Workout).
--   **Testing**:
-    -   Unit tests for Redux reducer.
-    -   E2E tests for "Start Workout" flow using `TestStepHelper`.
-    -   CI workflow for macOS.
--   **Documentation**:
-    -   `REDUX_ACTIONS.md`: Documented MVP actions.
-    -   `walkthrough.md`: Overview of changes.
+-   **Strict Timeouts**: Added `actionTimeout: 2000` to `playwright.config.ts` to fail tests quickly if an action hangs.
+-   **Race Condition Fix**: The "Sign In" button is now disabled until the Google Identity Services client is fully initialized. This prevents users (and tests) from clicking too early.
+-   **Test Optimization**: `auth.ts` now checks for `window.google` immediately, removing unnecessary waits in tests where the script is already loaded.
 
-## Verification
--   `npm run test:unit`: Passed locally.
--   `npx playwright test`: Passed locally.
+## Original Request
+> Read all the markdown in this repository to understand teh development process and where we are at so far. Review the e2e test(s) and make sure they adhere to all guidelines, and time them to make sure their timeouts are reasonably tight. Report back wehn you think the repository is ready for us to begin working on the next user story.

@@ -9,6 +9,7 @@
 
   let isAuthenticated = $state(false);
   let userName = $state('User');
+  let isAuthReady = $state(false);
 
   const unsubscribeStore = store.subscribe(() => {
     const state = store.getState();
@@ -20,6 +21,7 @@
 
   onMount(() => {
       const unsubscribeAuth = authState.subscribe(async (state) => {
+          isAuthReady = state.ready;
           if (state.token) {
               const user = await getUserInfo();
               if (user) {
@@ -79,7 +81,7 @@
   
   {#if !isAuthenticated}
     <div class="auth-container">
-      <button on:click={signIn} data-testid="sign-in-btn">
+      <button on:click={signIn} data-testid="sign-in-btn" disabled={!isAuthReady}>
         Sign In with Google
       </button>
     </div>
@@ -113,5 +115,11 @@
     border-radius: 8px;
     cursor: pointer;
     margin-top: 1rem;
+  }
+
+  button:disabled {
+    background-color: #555;
+    cursor: NOT-ALLOWED;
+    color: #888;
   }
 </style>

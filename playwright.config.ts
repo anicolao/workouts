@@ -29,6 +29,7 @@ export default defineConfig({
         deviceScaleFactor: 1,
         timezoneId: 'America/New_York',
         locale: 'en-CA',
+        actionTimeout: 2000,
     },
     snapshotPathTemplate: '{testDir}/{testFileDir}/screenshots/{arg}.png',
     expect: {
