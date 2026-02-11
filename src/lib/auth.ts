@@ -71,6 +71,14 @@ export function initializeAuth(onSuccess: (token: string) => void) {
     }
 
     let attempts = 0;
+
+    // Check immediately in case script is already loaded (common in tests/cached)
+    const g = (window as any).google;
+    if (typeof g !== 'undefined' && g.accounts) {
+        initClient(onSuccess);
+        return;
+    }
+
     const interval = setInterval(() => {
         const g = (window as any).google;
         if (typeof g !== 'undefined' && g.accounts) {
