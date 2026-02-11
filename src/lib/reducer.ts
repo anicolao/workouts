@@ -12,34 +12,54 @@ export const workoutSlice = createSlice({
             state.events.push(action.payload);
 
             // 2. Apply Logic based on event type
-            const { type, payload } = action.payload;
+            const { type, payload: eventPayload } = action.payload;
+
+            console.log(`Reducer processing: ${type}`, eventPayload);
 
             switch (type) {
-                // ... (lines 18-40)
+                case 'workout/start':
+                    state.currentWorkoutId = eventPayload.workoutId;
+                    state.workouts[eventPayload.workoutId] = {
+                        id: eventPayload.workoutId,
+                        startTime: eventPayload.timestamp,
+                        sets: []
+                    };
+                    break;
+
+                case 'workout/end':
+                    state.currentWorkoutId = null;
+                    if (state.workouts[eventPayload.workoutId]) {
+                        state.workouts[eventPayload.workoutId].endTime = eventPayload.timestamp;
+                    }
+                    break;
 
                 case 'set/log':
-                    if (state.workouts[payload.workoutId]) {
+                    if (state.workouts[eventPayload.workoutId]) {
                         const newSet: WorkoutSet = {
-                            id: payload.setId,
-                            exerciseName: payload.exerciseName,
-                            weight: payload.weight,
-                            reps: payload.reps,
-                            rpe: payload.rpe,
-                            timestamp: payload.timestamp,
+                            id: eventPayload.setId,
+                            exerciseName: eventPayload.exerciseName,
+                            weight: eventPayload.weight,
+                            reps: eventPayload.reps,
+                            rpe: eventPayload.rpe,
+                            timestamp: eventPayload.timestamp,
                         };
-                        state.workouts[payload.workoutId].sets.push(newSet);
+                        state.workouts[eventPayload.workoutId].sets.push(newSet);
                     }
                     break;
 
                 case 'exercise/upsert':
                     if (!state.exercises) state.exercises = {};
-                    state.exercises[payload.name] = payload;
+                    if (eventPayload && eventPayload.name) {
+                        state.exercises[eventPayload.name] = eventPayload;
+                    } else {
+                        console.error('Reducer: exercise/upsert missing name in payload', eventPayload);
+                    }
                     break;
 
                 case 'auth/login':
                     state.isAuthenticated = true;
-                    state.user = payload.user;
-                    state.accessToken = payload.accessToken;
+                    state.user = eventPayload.user;
+                    state.accessToken = eventPayload.accessToken;
                     break;
 
                 case 'sync/start':
