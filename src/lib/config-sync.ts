@@ -1,11 +1,11 @@
 import { store } from './store';
 import { processEvent } from './reducer';
 import type { Exercise } from './types';
+import { ensureWorkoutsFolder } from './drive-utils';
 
 const SHEET_TITLE = 'Exercise Catalog';
 const INSTRUCTIONS_TITLE = 'Instructions';
 const CONFIG_FILE_NAME = 'Exercise Catalog';
-const WORKOUTS_FOLDER_NAME = 'Workouts';
 
 const HEADERS = ['Exercise Name', 'Muscle Group', 'Default RPE', 'Tags'];
 const DEFAULT_EXERCISES = [
@@ -45,26 +45,7 @@ const INSTRUCTIONS_CONTENT = [
     // ... (instructions content)
 ];
 
-async function ensureWorkoutsFolder(accessToken: string): Promise<string | null> {
-    const searchUrl = `https://www.googleapis.com/drive/v3/files?q=name='${WORKOUTS_FOLDER_NAME}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
-    const searchRes = await fetch(searchUrl, { headers: { Authorization: `Bearer ${accessToken}` } });
-    const searchData = await searchRes.json();
-
-    if (searchData.files && searchData.files.length > 0) {
-        return searchData.files[0].id;
-    } else {
-        const createRes = await fetch('https://www.googleapis.com/drive/v3/files', {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                name: WORKOUTS_FOLDER_NAME,
-                mimeType: 'application/vnd.google-apps.folder'
-            })
-        });
-        const createData = await createRes.json();
-        return createData.id;
-    }
-}
+// ensureWorkoutsFolder is imported from ./drive-utils
 
 export async function ensureConfigSheet(accessToken: string): Promise<string | null> {
     try {
@@ -169,10 +150,16 @@ async function appendRows(accessToken: string, spreadsheetId: string, range: str
 
 export async function syncConfig(accessToken: string) {
     console.log('Starting config sync...');
-    const spreadsheetId = await ensureConfigSheet(accessToken);
-    if (!spreadsheetId) return;
+    store.dispatch(processEvent({ type: 'sync/start', payload: { timestamp: new Date().toISOString() } }));
+
+    // ... (rest of the function)
 
     try {
+        const spreadsheetId = await ensureConfigSheet(accessToken);
+        if (!spreadsheetId) {
+            throw new Error('Could not ensure config sheet');
+        }
+
         // Read Sheet Data
         const readRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${SHEET_TITLE}!A2:D`, {
             headers: { Authorization: `Bearer ${accessToken}` }
@@ -212,15 +199,11 @@ export async function syncConfig(accessToken: string) {
             }));
         }
 
-        // Sync App -> Sheet (New items only for now to avoid loops)
-        // Note: For now, we are prioritizing Sheet as source of truth for *edits*
-        // But if the App has an exercise not in the sheet (e.g. created offline?), we should add it.
-        // Implementation note: This part is tricky without strict ID matching.
-        // We will assume for MVP that the sheet is the master for configuration.
-
         console.log('Config sync complete');
+        store.dispatch(processEvent({ type: 'sync/success', payload: { timestamp: new Date().toISOString() } }));
 
     } catch (e) {
         console.error('Error syncing config:', e);
+        store.dispatch(processEvent({ type: 'sync/error', payload: { error: String(e), timestamp: new Date().toISOString() } }));
     }
 }

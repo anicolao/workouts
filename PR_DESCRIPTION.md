@@ -1,16 +1,19 @@
-## Feature: Configuration Sheet Sync
+# Feature: Action Persistence & Sync Status UI
 
-This PR implements the bidirectional synchronization between the App and the `Exercise Catalog` Google Sheet.
+## Description
+This PR introduces action logging to Google Sheets and a visible Sync Status UI. 
 
-### Changes
--   **Auth**: Added `drive.file` and `spreadsheets` scopes to `auth.ts`.
--   **Config Sync**: Created `src/lib/config-sync.ts` which:
-    -   Creates the `Exercise Catalog` sheet if it doesn't exist, using defaults from `CONFIG_SHEET_DESIGN.md`.
-    -   Reads the sheet and dispatches `exercise/upsert` actions.
-    -   Is triggered on login and token refresh.
--   **State**: Updated `reducer.ts` and `types.ts` to handle `exercise/upsert` and store exercises in `state.workout.exercises`.
--   **Tests**: Added `tests/e2e/config-sync.spec.ts` to verify the sync flow using mocked Drive/Sheets APIs.
+- **Action Log**: User actions (start workout, log set, etc.) are now appended to an `InternalEventLog` spreadsheet in the `Workouts` folder.
+- **Sync Status**: Users can now see the current sync status (Synced, Syncing, Error) via an icon in the header.
+- **Sync Page**: A dedicated page `/sync` details the last sync time and allows forcing a sync.
+- **Config Sync**: Includes the foundation for syncing exercise configuration from a generic `Exercise Catalog` sheet.
 
-### Verification
--   Run `npx playwright test tests/e2e/config-sync.spec.ts` to verify the logic.
--   Manual verification: Log into the app, check Google Drive for "Workouts Data" sheet, and verify "Exercise Catalog" is populated.
+## Implementation Details
+- **Middleware**: `actionLogMiddleware` in Redux store intercepts actions.
+- **Drive/Sheets API**: `drive-utils.ts` and `action-log.ts` handle API interactions.
+- **State Management**: Redux state updated to track `syncStatus` and `lastSync`.
+- **E2E Testing**: `tests/e2e/action-persistence.spec.ts` covers the full flow with mocked APIs.
+
+## Verification
+- Ran E2E tests successfully.
+- Verified mocked API interactions for sheet creation and appending.

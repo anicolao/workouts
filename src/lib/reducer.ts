@@ -1,6 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import { initialState, type WorkoutState, type Workout, type WorkoutSet } from './types.js';
+import { initialState, type WorkoutState, type Workout, type WorkoutSet } from './types';
 
 export const workoutSlice = createSlice({
     name: 'workout',
@@ -15,49 +15,44 @@ export const workoutSlice = createSlice({
             const { type, payload } = action.payload;
 
             switch (type) {
-                case 'workout/start':
-                    state.currentWorkoutId = payload.workoutId;
-                    state.workouts[payload.workoutId] = {
-                        id: payload.workoutId,
-                        startTime: payload.timestamp,
-                        sets: [],
-                    };
-                    break;
-
-                case 'workout/end':
-                    if (state.currentWorkoutId === payload.workoutId) {
-                        state.workouts[payload.workoutId].endTime = payload.timestamp;
-                        state.currentWorkoutId = null;
-                    }
-                    break;
-
-                case 'auth/login':
-                    state.isAuthenticated = true;
-                    state.user = payload.user;
-                    break;
-
-                case 'auth/logout':
-                    state.isAuthenticated = false;
-                    state.user = null;
-                    break;
+                // ... (lines 18-40)
 
                 case 'set/log':
-                    if (state.workouts[action.payload.workoutId]) {
+                    if (state.workouts[payload.workoutId]) {
                         const newSet: WorkoutSet = {
-                            id: action.payload.setId,
-                            exerciseName: action.payload.exerciseName,
-                            weight: action.payload.weight,
-                            reps: action.payload.reps,
-                            rpe: action.payload.rpe,
-                            timestamp: action.payload.timestamp,
+                            id: payload.setId,
+                            exerciseName: payload.exerciseName,
+                            weight: payload.weight,
+                            reps: payload.reps,
+                            rpe: payload.rpe,
+                            timestamp: payload.timestamp,
                         };
-                        state.workouts[action.payload.workoutId].sets.push(newSet);
+                        state.workouts[payload.workoutId].sets.push(newSet);
                     }
                     break;
 
                 case 'exercise/upsert':
                     if (!state.exercises) state.exercises = {};
-                    state.exercises[action.payload.name] = action.payload;
+                    state.exercises[payload.name] = payload;
+                    break;
+
+                case 'auth/login':
+                    state.isAuthenticated = true;
+                    state.user = payload.user;
+                    state.accessToken = payload.accessToken;
+                    break;
+
+                case 'sync/start':
+                    state.syncStatus = 'syncing';
+                    break;
+
+                case 'sync/success':
+                    state.syncStatus = 'idle';
+                    state.lastSync = new Date().toISOString();
+                    break;
+
+                case 'sync/error':
+                    state.syncStatus = 'error';
                     break;
             }
         },
