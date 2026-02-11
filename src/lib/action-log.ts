@@ -90,12 +90,13 @@ export async function appendAction(accessToken: string, entry: ActionLogEntry) {
             JSON.stringify(entry.payload) // Serialize payload
         ]];
 
-        await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${SHEET_TITLE}!A:D:append?valueInputOption=USER_ENTERED`, {
+        const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${SHEET_TITLE}!A:D:append?valueInputOption=USER_ENTERED`, {
             method: 'POST',
             headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ values })
         });
-        console.log(`Appended action ${entry.actionType} to log.`);
+        const data = await res.json();
+        console.log(`Appended action ${entry.actionType} to log at range:`, data.updates?.updatedRange);
     } catch (e) {
         console.error('Error appending action to log:', e);
     }
