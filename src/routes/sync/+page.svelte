@@ -1,6 +1,6 @@
 <script lang="ts">
     import { store } from '$lib/store';
-    import { syncConfig } from '$lib/config-sync';
+    import { initializeAndSync } from '$lib/config-sync';
     import { onDestroy } from 'svelte';
     import { base } from '$app/paths';
 
@@ -21,7 +21,7 @@
 
     async function handleSync() {
         if (accessToken) {
-            await syncConfig(accessToken);
+            await initializeAndSync(accessToken);
         }
     }
 </script>
