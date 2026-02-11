@@ -199,16 +199,29 @@ export async function syncConfig(accessToken: string) {
         const currentExercises = state.workout.exercises || {};
 
         for (const [name, data] of Object.entries(sheetExercises)) {
-            // Simplified check: if name doesn't exist or data is different, dispatch update
-            // Ideally we'd have a more robust diff, but this is MVP
-            // We use a specific action to update/upsert
-            store.dispatch(processEvent({
-                type: 'exercise/upsert', // We need to handle this in reducer
-                payload: {
-                    ...data,
-                    timestamp: new Date().toISOString()
+            const current = currentExercises[name];
+            let isDifferent = true;
+
+            if (current) {
+                const tagsMatch = current.tags.length === data.tags.length &&
+                    current.tags.every((t: string, i: number) => t === data.tags[i]);
+
+                if (current.muscleGroup === data.muscleGroup &&
+                    current.defaultRpe === data.defaultRpe &&
+                    tagsMatch) {
+                    isDifferent = false;
                 }
-            }));
+            }
+
+            if (isDifferent) {
+                store.dispatch(processEvent({
+                    type: 'exercise/upsert',
+                    payload: {
+                        ...data,
+                        timestamp: new Date().toISOString()
+                    }
+                }));
+            }
         }
 
         console.log('Config sync complete');
