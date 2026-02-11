@@ -25,13 +25,16 @@
 </svelte:head>
 
 {#if isAuthenticated}
-    <a href="{base}/sync" class="sync-status-icon" aria-label="Sync Status">
+    <a href="{base}/sync" class="sync-status-icon neon-icon" aria-label="Sync Status">
         {#if syncStatus === 'syncing'}
-            🔄
+            <div class="pulse-stack">
+                <img src="{base}/images/icon-status-syncing.png" alt="Syncing" class="status-icon neon-icon base" />
+                <img src="{base}/images/icon-status-syncing.png" alt="" class="status-icon neon-icon overlay" />
+            </div>
         {:else if syncStatus === 'error'}
-            ❌
+             <img src="{base}/images/icon-status-error.png" alt="Error" class="status-icon neon-icon error-glow" />
         {:else}
-            ☁️
+            <img src="{base}/images/icon-status-synced.png" alt="Synced" class="status-icon neon-icon" />
         {/if}
     </a>
 {/if}
@@ -55,21 +58,55 @@
         top: 1rem;
         right: 1rem;
         z-index: 1000;
-        font-size: 1.5rem;
         text-decoration: none;
         cursor: pointer;
         padding: 0.5rem;
-        background: rgba(0, 0, 0, 0.5);
         border-radius: 50%;
-        width: 40px;
-        height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background 0.2s;
+        transition: transform 0.2s;
     }
 
-    .sync-status-icon:hover {
-        background: rgba(255, 255, 255, 0.1);
+    .sync-status-icon:active {
+        transform: scale(0.95);
+    }
+
+    .status-icon {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+    }
+
+    /* Neon Icon Styling */
+    .neon-icon {
+        display: block;
+        mix-blend-mode: plus-lighter;
+    }
+
+    .pulse-stack {
+        position: relative;
+        width: 32px;
+        height: 32px;
+    }
+
+    .pulse-stack .base {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0.8;
+    }
+
+    .pulse-stack .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        mix-blend-mode: plus-lighter;
+        animation: neon-pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes neon-pulse {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 1; }
     }
 </style>
