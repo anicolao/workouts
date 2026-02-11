@@ -8,6 +8,7 @@ We enforce a strict **Zero-Pixel Tolerance** policy for visual regression. Since
 
 *   **Software Rendering**: We use software rendering (browsers launched with specific flags) to ensure 100% consistent snapshots across CI and local environments.
 *   **Determinism**: Tests must be perfectly deterministic. Random seeds must be fixed.
+*   **NO MASKING**: Masking elements in screenshots is **ABSOLUTELY FORBIDDEN**. If a test is flaky due to dynamic content (like dates or versions), you must make the content deterministic (e.g., by mocking, setting environment variables, or freezing time), NOT mask it.
 
 ## 2. Test Structure
 

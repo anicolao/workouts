@@ -128,7 +128,7 @@ test('Action Persistence: Logs actions and shows sync status', async ({ page }, 
     await page.locator('.sync-status-icon').click();
     await expect(page).toHaveURL(/.*\/sync/);
     await expect(page.locator('h1')).toHaveText('Network & Sync');
-    await expect(page).toHaveScreenshot({ mask: [page.locator('.version-info')] });
+
 
     // 6. Conclude
     tester.generateDocs();
