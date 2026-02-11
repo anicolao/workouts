@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 import { base } from '$app/paths';
 import { replaceState } from '$app/navigation';
+import { syncConfig } from './config-sync';
 
 // @ts-ignore
 export const GOOGLE_CLIENT_ID = (import.meta.env && import.meta.env.VITE_GOOGLE_OAUTH_ID) || undefined;
@@ -8,7 +9,8 @@ export const GOOGLE_CLIENT_ID = (import.meta.env && import.meta.env.VITE_GOOGLE_
 export const SCOPES = [
     'https://www.googleapis.com/auth/userinfo.profile',
     'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/drive.file'
+    'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/spreadsheets'
 ].join(' ');
 
 export interface UserProfile {
@@ -55,6 +57,7 @@ export function initializeAuth(onSuccess: (token: string) => void) {
             accessToken = storedToken;
             authState.update(s => ({ ...s, token: storedToken }));
             onSuccess(accessToken);
+            syncConfig(accessToken); // Trigger sync
             (window as any)._authReady = true;
             authState.update(s => ({ ...s, ready: true }));
             const remainingSeconds = (expiryTime - now) / 1000;
@@ -127,6 +130,7 @@ function handleTokenResponse(response: any, onSuccess: (token: string) => void) 
     localStorage.setItem(EXPIRY_KEY, expiryTime.toString());
 
     authState.update(s => ({ ...s, token: accessToken }));
+    syncConfig(accessToken); // Trigger sync
 
     if (refreshResolver) {
         refreshResolver(accessToken);

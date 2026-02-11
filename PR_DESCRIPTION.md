@@ -1,12 +1,16 @@
-# Reviewed E2E Tests & Config
+## Feature: Configuration Sheet Sync
 
-## Description
-This PR addresses several issues found during a review of the E2E testing setup. It enforces stricter timeouts, fixes a race condition in the authentication flow, and optimizes test determinism.
+This PR implements the bidirectional synchronization between the App and the `Exercise Catalog` Google Sheet.
 
-## Changes
--   **Strict Timeouts**: Added `actionTimeout: 2000` to `playwright.config.ts` to fail tests quickly if an action hangs.
--   **Race Condition Fix**: The "Sign In" button is now disabled until the Google Identity Services client is fully initialized. This prevents users (and tests) from clicking too early.
--   **Test Optimization**: `auth.ts` now checks for `window.google` immediately, removing unnecessary waits in tests where the script is already loaded.
+### Changes
+-   **Auth**: Added `drive.file` and `spreadsheets` scopes to `auth.ts`.
+-   **Config Sync**: Created `src/lib/config-sync.ts` which:
+    -   Creates the `Exercise Catalog` sheet if it doesn't exist, using defaults from `CONFIG_SHEET_DESIGN.md`.
+    -   Reads the sheet and dispatches `exercise/upsert` actions.
+    -   Is triggered on login and token refresh.
+-   **State**: Updated `reducer.ts` and `types.ts` to handle `exercise/upsert` and store exercises in `state.workout.exercises`.
+-   **Tests**: Added `tests/e2e/config-sync.spec.ts` to verify the sync flow using mocked Drive/Sheets APIs.
 
-## Original Request
-> Read all the markdown in this repository to understand teh development process and where we are at so far. Review the e2e test(s) and make sure they adhere to all guidelines, and time them to make sure their timeouts are reasonably tight. Report back wehn you think the repository is ready for us to begin working on the next user story.
+### Verification
+-   Run `npx playwright test tests/e2e/config-sync.spec.ts` to verify the logic.
+-   Manual verification: Log into the app, check Google Drive for "Workouts Data" sheet, and verify "Exercise Catalog" is populated.
