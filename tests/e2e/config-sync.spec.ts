@@ -14,9 +14,28 @@ test('Config Sync: Creates sheet and syncs exercises', async ({ page }, testInfo
     let createdSheetId: string | null = null;
     let appendedImages: any[] = [];
 
-    // Mock File Search (return empty first to trigger create)
+    // Mock File Search (Folder & Sheet)
     await page.route('https://www.googleapis.com/drive/v3/files?*', async route => {
-        await route.fulfill({ json: { files: [] } });
+        const url = route.request().url();
+        if (url.includes("mimeType='application/vnd.google-apps.folder'")) {
+            // Return empty for folder search -> trigger create
+            await route.fulfill({ json: { files: [] } });
+        } else if (url.includes("mimeType='application/vnd.google-apps.spreadsheet'")) {
+            // Return empty for sheet search -> trigger create
+            await route.fulfill({ json: { files: [] } });
+        } else {
+            await route.continue();
+        }
+    });
+
+    // Mock Create File (Folder)
+    await page.route('https://www.googleapis.com/drive/v3/files', async route => {
+        const body = route.request().postDataJSON();
+        if (body.mimeType === 'application/vnd.google-apps.folder') {
+            await route.fulfill({ json: { id: 'new-folder-id' } });
+        } else {
+            await route.continue();
+        }
     });
 
     // Mock Create Sheet
@@ -26,6 +45,11 @@ test('Config Sync: Creates sheet and syncs exercises', async ({ page }, testInfo
         await route.fulfill({ json: { spreadsheetId: createdSheetId } });
     });
 
+    // Mock Move to Folder
+    await page.route('https://www.googleapis.com/drive/v3/files/*?addParents=*', async route => {
+        await route.fulfill({ json: {} });
+    });
+
     // Mock Append Rows
     await page.route('https://sheets.googleapis.com/v4/spreadsheets/*/values/*:append*', async route => {
         const body = route.request().postDataJSON();
@@ -33,7 +57,7 @@ test('Config Sync: Creates sheet and syncs exercises', async ({ page }, testInfo
         await route.fulfill({ json: {} });
     });
 
-    // Mock Read Rows (return existing defaults + one custom)
+    // Mock Read Rows
     await page.route('https://sheets.googleapis.com/v4/spreadsheets/*/values/Exercise Catalog!A2:D', async route => {
         await route.fulfill({
             json: {
