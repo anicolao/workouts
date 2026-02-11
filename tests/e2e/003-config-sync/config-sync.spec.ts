@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { TestStepHelper } from './helpers/test-step-helper';
-import { mockGoogleAuth } from './helpers/mock-auth';
+import { TestStepHelper } from '../helpers/test-step-helper';
+import { mockGoogleAuth } from '../helpers/mock-auth';
 
 test('Config Sync: Creates sheet and syncs exercises', async ({ page }, testInfo) => {
     // 1. Initialize
