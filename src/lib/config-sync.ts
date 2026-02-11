@@ -4,7 +4,8 @@ import type { Exercise } from './types';
 
 const SHEET_TITLE = 'Exercise Catalog';
 const INSTRUCTIONS_TITLE = 'Instructions';
-const CONFIG_FILE_NAME = 'Workouts Data';
+const CONFIG_FILE_NAME = 'Exercise Catalog';
+const WORKOUTS_FOLDER_NAME = 'Workouts';
 
 const HEADERS = ['Exercise Name', 'Muscle Group', 'Default RPE', 'Tags'];
 const DEFAULT_EXERCISES = [
@@ -41,12 +42,37 @@ const INSTRUCTIONS_CONTENT = [
     ['- Do NOT rename the "Exercise Catalog" sheet.'],
     ['- Do NOT delete the header row (Row 1).'],
     ['- Changes here will be synced to the app the next time you open it.']
+    // ... (instructions content)
 ];
+
+async function ensureWorkoutsFolder(accessToken: string): Promise<string | null> {
+    const searchUrl = `https://www.googleapis.com/drive/v3/files?q=name='${WORKOUTS_FOLDER_NAME}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+    const searchRes = await fetch(searchUrl, { headers: { Authorization: `Bearer ${accessToken}` } });
+    const searchData = await searchRes.json();
+
+    if (searchData.files && searchData.files.length > 0) {
+        return searchData.files[0].id;
+    } else {
+        const createRes = await fetch('https://www.googleapis.com/drive/v3/files', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: WORKOUTS_FOLDER_NAME,
+                mimeType: 'application/vnd.google-apps.folder'
+            })
+        });
+        const createData = await createRes.json();
+        return createData.id;
+    }
+}
 
 export async function ensureConfigSheet(accessToken: string): Promise<string | null> {
     try {
-        // 1. Search for existing spreadsheet
-        const searchUrl = `https://www.googleapis.com/drive/v3/files?q=name='${CONFIG_FILE_NAME}' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false`;
+        const folderId = await ensureWorkoutsFolder(accessToken);
+        if (!folderId) return null;
+
+        // 1. Search for existing spreadsheet in the folder
+        const searchUrl = `https://www.googleapis.com/drive/v3/files?q=name='${CONFIG_FILE_NAME}' and mimeType='application/vnd.google-apps.spreadsheet' and '${folderId}' in parents and trashed=false`;
         const searchRes = await fetch(searchUrl, { headers: { Authorization: `Bearer ${accessToken}` } });
         const searchData = await searchRes.json();
 
@@ -70,6 +96,12 @@ export async function ensureConfigSheet(accessToken: string): Promise<string | n
             });
             const createData = await createRes.json();
             spreadsheetId = createData.spreadsheetId;
+
+            // Move to folder (add parent)
+            await fetch(`https://www.googleapis.com/drive/v3/files/${spreadsheetId}?addParents=${folderId}`, {
+                method: 'PATCH',
+                headers: { Authorization: `Bearer ${accessToken}` }
+            });
 
             // Populate Instructions
             await appendRows(accessToken, spreadsheetId, INSTRUCTIONS_TITLE, INSTRUCTIONS_CONTENT);
