@@ -78,7 +78,22 @@ async function _ensureActionLogSheet(accessToken: string): Promise<string | null
     }
 }
 
-export async function appendAction(accessToken: string, entry: ActionLogEntry) {
+// Queue for serializing append operations
+let appendQueue: Promise<void> = Promise.resolve();
+
+export function appendAction(accessToken: string, entry: ActionLogEntry): Promise<void> {
+    // Chain the new operation to the end of the queue
+    appendQueue = appendQueue.then(async () => {
+        try {
+            await _appendAction(accessToken, entry);
+        } catch (e) {
+            console.error('Error in append queue:', e);
+        }
+    });
+    return appendQueue;
+}
+
+async function _appendAction(accessToken: string, entry: ActionLogEntry) {
     const spreadsheetId = await ensureActionLogSheet(accessToken);
     if (!spreadsheetId) return;
 
