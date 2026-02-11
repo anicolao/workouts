@@ -57,19 +57,31 @@
         <h2>Connection</h2>
         <div class="status-row">
             <span class="label">Status</span>
-            <span class="value {isOnline ? 'online' : 'offline'}">
-                {isOnline ? "Online" : "Offline"}
-            </span>
+            <div class="value-group">
+                <span class="value-text {isOnline ? 'online' : 'offline'}">
+                    {isOnline ? "Online" : "Offline"}
+                </span>
+                <img src="{base}/images/icon-status-{isOnline ? 'synced' : 'offline'}.png" alt="Connection Status" class="status-icon" />
+            </div>
         </div>
         <div class="status-row">
             <span class="label">Sync Activity</span>
-            <span class="value {syncStatus}">
-                {syncStatus === 'syncing' ? "Syncing..." : syncStatus.toUpperCase()}
-            </span>
+            <div class="value-group">
+                <span class="value-text {syncStatus}">
+                    {syncStatus === 'syncing' ? "Syncing..." : syncStatus.toUpperCase()}
+                </span>
+                {#if syncStatus === 'syncing'}
+                    <img src="{base}/images/icon-status-syncing.png" alt="Syncing" class="status-icon" />
+                {:else if syncStatus === 'error'}
+                    <img src="{base}/images/icon-status-error.png" alt="Error" class="status-icon" />
+                {:else}
+                    <img src="{base}/images/icon-status-synced.png" alt="Synced" class="status-icon" />
+                {/if}
+            </div>
         </div>
         <div class="status-row">
             <span class="label">Last Sync</span>
-            <span class="value">
+            <span class="value-text">
                 {lastSync ? new Date(lastSync).toLocaleString() : 'Never'}
             </span>
         </div>
@@ -175,16 +187,28 @@
         color: #a0a0a0;
     }
 
-    .value {
+    .value-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .status-icon {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+    }
+
+    .value-text {
         font-weight: 500;
         text-align: right;
     }
 
-    .value.online { color: #2ecc71; }
-    .value.offline { color: #e74c3c; }
-    .value.idle { color: #2ecc71; }
-    .value.syncing { color: #f1c40f; }
-    .value.error { color: #e74c3c; }
+    .value-text.online { color: #2ecc71; }
+    .value-text.offline { color: #e74c3c; }
+    .value-text.idle { color: #2ecc71; }
+    .value-text.syncing { color: #f1c40f; }
+    .value-text.error { color: #e74c3c; }
 
     .primary-btn {
         width: 100%;
