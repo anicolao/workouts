@@ -4,6 +4,9 @@ import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 
 const getGitHash = () => {
+	if (process.env.COMMIT_HASH) {
+		return process.env.COMMIT_HASH.substring(0, 7);
+	}
 	try {
 		return execSync('git rev-parse --short HEAD').toString().trim();
 	} catch {
