@@ -91,29 +91,36 @@ Each program file defines a routine.
 
 ## UI Mockups
 
-### Program Selection (New Step)
-*   **Goal**: Context setting before the workout.
-*   **Aesthetic**: Large cards or a list for "Today's Plan".
-*   **Default State**: Automatically selects the next scheduled workout day.
-*   **Edit Action**: "Change Program/Day" button allows manual override.
-*   **Next Step**: "Start Workout" button confirms the selection.
+### Program Selection (Choose Program)
+*   **Access**: Via "Profile" tab or "Change Program" link on Dashboard.
+*   **Goal**: Switch active routine.
+*   **Aesthetic**: Consistent with Dashboard. Vertical list of cards.
+*   **Status**: Indicates "Active" program.
 
-### Dashboard
+![Program Selection Mockup](assets/images/unified_program_selection_mockup.png)
+
+
+### Dashboard (Home)
+*   **Goal**: Immediate access to the next session.
 *   **Aesthetic**: Dark mode, "Data-First". High contrast, neon accents (cyan/lime).
-*   **Top**: "Start Workout" button -> Leads to **Program Selection**.
-*   **Key Metrics**: Row of sparkline cards for "Core Exercises" (e.g., Squat, Bench, Deadlift) showing current estimated 1RM.
-*   **Bottom**: "See Full Analytics" button to drill down into detailed stats.
+*   **Primary Action**: Large "Next Workout" card showing current program and day (e.g., "PPL - Push A").
+*   **Action Button**: "Start Workout" (Neon Lime, full width).
+*   **Secondary**: Quick Stats (Sparklines) and Bottom Navigation [Home, History, Profile].
+
+![Dashboard Mockup](assets/images/unified_dashboard_mockup.png)
+
 
 ### Workout Logger
 *   **Focus**: Efficiency. Large touch targets.
 *   **Header**: Session Timer and Current Exercise Name.
-*   **List**: Pre-populated list of exercises based on the selected program.
-*   **Exercise Actions (Swipe/Menu)**:
-    *   **Swap**: Replace this exercise with another from the catalog.
-    *   **Remove**: Delete this exercise from the current session.
+*   **List**: Pre-populated list of exercises.
+*   **Navigation**: Bottom Menu [Home, History, Profile] remains visible (or accessible).
 *   **Interaction**: User Taps an exercise to expand it and log sets.
 *   **Input**: Row of inputs for `Weight (kg)`, `Reps`, `RPE`, with a checkbox to mark as done.
-*   **Actions**: "Finish Workout" button.
+*   **Actions**: "Finish Workout" button (bottom of list or top right).
+
+![Logger Mockup](assets/images/unified_logger_mockup.png)
+
 
 ### Analytics
 *   **Chart**: Line graph of Estimated 1RM for selected exercise.

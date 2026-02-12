@@ -33,35 +33,27 @@ Each Program Spreadsheet contains a single sheet (tab) with the following column
 
 ## UI Design
 
-### 1. Program Selection (Pre-Workout)
+### 1. Program Selection (Choose Program)
 
-This is the first screen a user sees after clicking "Start Workout".
+This screen is accessed via the **Profile** tab or a "Change Program" link on the Dashboard. It is NOT the default landing screen.
 
-*   **Purpose**: Confirm *what* the user is doing today.
-*   **Default Behavior**: The app remembers the last completed day for each program and **automatically selects the next day**.
-
-#### Components
-1.  **Header**: "Choose Workout"
-2.  **Program Cards (Horizontal Scroll)**:
-    *   One card per Program File found in the `Programs` folder.
-    *   **Title**: Program Name (Filename).
-    *   **Subtitle**: Next Scheduled Day (e.g., "Day: Push A").
-    *   **Progress Indicator**: Visual cue of progress through the cycle (optional).
-3.  **Day Selector (Dropdown/Carousel)**:
-    *   Defaults to the "Next Day".
-    *   User can tap to override (e.g., if they want to repeat a day or skip ahead).
-4.  **Confirm Button**: "Start Workout" (Neon Lime).
+*   **Header**: "Choose Program"
+*   **List**: Vertical scrolling list of Program Cards.
+*   **Card State**:
+    *   **Active**: Highlighted (Neon Lime border/badge) indicating the current routine.
+    *   **Inactive**: Standard appearance.
+*   **Action**: Tapping a card sets it as "Active" and returns to Dashboard.
 
 #### Mockup
 
-![Program Selection Mockup](assets/images/program_selection_mockup.png)
+![Program Selection Mockup](assets/images/unified_program_selection_mockup.png)
 
 ## Interaction Flow
 
-1.  User taps "Start Workout" on Home Dashboard.
-2.  App scans `Programs` folder in Drive.
-3.  App displays **Program Selection** screen.
-    *   *System Logic*: Finds the last logged session for the active program. Identifying that "Push A" was done last, it defaults selection to "Pull A".
-4.  User confirms "Pull A" or selects a different day.
-5.  User taps "Start Workout".
-6.  App navigates to **Workout Logger**, pre-populated with exercises from the 'Pull A' rows in the `PPL` sheet.
+1.  User enters **Profile** tab.
+2.  User taps "Current Program: PPL".
+3.  App shows **Choose Program** list.
+4.  User selects "Starting Strength".
+5.  App updates the "Active Program" pointer in `Config` sheet.
+6.  User is returned to Dashboard, which now shows the next workout for "Starting Strength".
+
