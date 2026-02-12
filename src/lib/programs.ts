@@ -162,7 +162,7 @@ export async function getPrograms(accessToken: string): Promise<Program[]> {
     // List all spreadsheets
     const q = `'${programsFolderId}' in parents and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false`;
     const searchUrl = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name)`;
-    const searchRes = await fetch(searchUrl, { headers: { Authorization: `Bearer ${accessToken}` } });
+    const searchRes = await fetch(searchUrl, { headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store' });
     const searchData = await searchRes.json();
     const files = searchData.files || [];
 
@@ -183,7 +183,7 @@ export async function getPrograms(accessToken: string): Promise<Program[]> {
 async function parseProgramSpreadsheet(accessToken: string, spreadsheetId: string, name: string): Promise<Program> {
     // 1. Get spreadsheet metadata (specifically sheet titles)
     const metaRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?fields=sheets(properties(title))`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
+        headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store'
     });
     const metaData = await metaRes.json();
     const sheets = metaData.sheets || [];

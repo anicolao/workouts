@@ -260,6 +260,84 @@ export async function initializeAndSync(accessToken: string) {
         const currentPrograms = state.workout.programs || {};
 
         for (const program of programs) {
+            const current = currentPrograms[program.id];
+
+            if (!current) {
+                // New program, upsert entire thing
+                store.dispatch(processEvent({
+                    type: 'program/upsert',
+                    payload: program
+                }));
+                continue;
+            }
+
+            // Diffing Logic
+            // Iterate Weeks
+            for (let w = 0; w < program.weeks.length; w++) {
+                const week = program.weeks[w];
+                const currentWeek = current.weeks[w];
+
+                if (!currentWeek) {
+                    store.dispatch(processEvent({ type: 'program/upsert', payload: program }));
+                    break;
+                }
+
+                // Iterate Days
+                for (let d = 0; d < week.days.length; d++) {
+                    const day = week.days[d];
+                    const currentDay = currentWeek.days[d];
+
+                    if (!currentDay) {
+                        store.dispatch(processEvent({ type: 'program/upsert', payload: program }));
+                        break;
+                    }
+
+                    // Compare Exercises
+                    if (day.exercises.length !== currentDay.exercises.length) {
+                        store.dispatch(processEvent({
+                            type: 'program/updateDay',
+                            payload: {
+                                programId: program.id,
+                                weekIndex: w,
+                                dayIndex: d,
+                                day: day
+                            }
+                        }));
+                        continue;
+                    }
+
+                    // Same length, check individual exercises
+                    for (let e = 0; e < day.exercises.length; e++) {
+                        const ex = day.exercises[e];
+                        const curEx = currentDay.exercises[e];
+
+                        // Explicit Field Comparison
+                        const isDifferent =
+                            ex.name !== curEx.name ||
+                            ex.load !== curEx.load ||
+                            ex.reps !== curEx.reps ||
+                            ex.rpe !== curEx.rpe ||
+                            ex.notes !== curEx.notes;
+
+                        if (isDifferent) {
+                            console.log(`Exercise update detected: Week ${w}, Day ${d}, Ex ${e}`);
+                            console.log(`  Current: ${JSON.stringify(curEx)}`);
+                            console.log(`  New:     ${JSON.stringify(ex)}`);
+
+                            store.dispatch(processEvent({
+                                type: 'program/updateExercise',
+                                payload: {
+                                    programId: program.id,
+                                    weekIndex: w,
+                                    dayIndex: d,
+                                    exerciseIndex: e,
+                                    exercise: ex
+                                }
+                            }));
+                        }
+                    }
+                }
+            }
         }
         console.log(`Synced ${programs.length} programs.`);
 
