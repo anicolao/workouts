@@ -11,25 +11,27 @@ This document outlines the design and user experience for managing and selecting
 
 To facilitate sharing and organization, programs are stored as individual Google Sheets within a dedicated folder.
 
-*   **Root Folder**: `Workouts App Data` (Existing)
-*   **Sub-Folder**: `Programs` (New)
+*   **Root Folder**: `Workouts`
+*   **Sub-Folder**: `Programs`
 *   **Files**: One Spreadsheet per Program (e.g., `PPL.xlsx`, `Starting Strength.xlsx`).
 
 ### Program Sheet Schema
 
-Each Program Spreadsheet contains a single sheet (tab) with the following columns:
+*   **Tabs**: Each **Week** of a program should be on its own Sheet (Tab) to allow for micro-cycles (e.g., volume ramp-up).
+*   **Row Order**: The order of exercises is determined implicitly by their row number (top to bottom).
 
-| Day Name | Exercise Name | Order | Notes |
-| :--- | :--- | :--- | :--- |
-| Push A | Bench Press | 1 | Heavy, 3-5 mins rest |
-| Push A | Overhead Press | 2 | |
-| Push A | Incline Dumbbell Press | 3 | |
-| Pull A | Deadlift | 1 | |
+| Day Name | Exercise Name | Load | Rep Range | RPE | Notes |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Push A | Bench Press | 135 | 5-8 | 8 | Heavy |
+| Push A | Overhead Press | | 8-12 | 9 | |
 
 *   **Day Name**: Grouping key for exercises.
 *   **Exercise Name**: Must match an entry in the main `Exercise Catalog`.
-*   **Order**: Integers defining the sequence.
-*   **Notes**: Optional instructions specific to this program context.
+*   **Load**: (Optional) Prescribed weight text (e.g., "135 lbs", "70%").
+*   **Rep Range**: (Optional) Prescribed reps (e.g., "5", "8-12").
+*   **RPE**: (Optional) Target intensity (1-10).
+*   **Notes**: Optional form cues or instructions.
+
 
 ## UI Design
 
