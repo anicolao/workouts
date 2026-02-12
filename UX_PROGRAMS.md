@@ -22,14 +22,14 @@ To facilitate sharing and organization, programs are stored as individual Google
 
 | Day Name | Exercise Name | Load | Rep Range | RPE | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| Push A | Bench Press | 135 | 5-8 | 8 | Heavy |
+| Push A | Bench Press | 70% | 5-8 | 8 | Heavy |
 | Push A | Overhead Press | | 8-12 | 9 | |
 
 *   **Day Name**: Grouping key for exercises.
 *   **Exercise Name**: Must match an entry in the main `Exercise Catalog`.
-*   **Load**: (Optional) Prescribed weight text (e.g., "135 lbs", "70%").
+*   **Load**: (Optional) Prescribed intensity as a percentage of 1RM (e.g., "70%", "85%").
 *   **Rep Range**: (Optional) Prescribed reps (e.g., "5", "8-12").
-*   **RPE**: (Optional) Target intensity (1-10).
+*   **RPE**: (Optional) Target intensity (1-10) based on Rate of Perceived Exertion.
 *   **Notes**: Optional form cues or instructions.
 
 
@@ -46,9 +46,13 @@ This screen is accessed via the **Profile** tab or a "Change Program" link on th
     *   **Inactive**: Standard appearance.
 *   **Action**: Tapping a card sets it as "Active" and returns to Dashboard.
 
-#### Mockup
+#### Mockups
 
-![Program Selection Mockup](assets/images/unified_program_selection_mockup.png)
+**Option A (Original)**
+![Program Selection Original](assets/images/program_selection_mockup.png)
+
+**Option B (Unified)**
+![Program Selection Unified](assets/images/unified_program_selection_mockup.png)
 
 ## Interaction Flow
 
