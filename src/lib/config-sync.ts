@@ -260,21 +260,6 @@ export async function initializeAndSync(accessToken: string) {
         const currentPrograms = state.workout.programs || {};
 
         for (const program of programs) {
-            // Logic to check diffs is complex for nested objects.
-            // For MVP: Upsert if it exists. 
-            // In a real app we'd deep compare or strict hash check.
-            // But here, since we parse fresh every time, let's just dispatch upsert.
-            // To avoid spamming, we can check basic equality of names or last modified if available.
-            // Let's at least check if ID exists.
-
-            // Actually, we want to update if user changed the sheet.
-            // Since we don't have a "last modified" easily without extra calls, 
-            // we will just upsert. Redux is cheap here.
-
-            store.dispatch(processEvent({
-                type: 'program/upsert',
-                payload: program
-            }));
         }
         console.log(`Synced ${programs.length} programs.`);
 
