@@ -50,9 +50,14 @@ When entering the logger from a selected Program Day:
 4.  **Ad-Hoc Add**:
     *   At the bottom of the list, a "+ Add Exercise" button allows searching the `Exercise Catalog` to append a new movement.
 
+5.  **Bottom Navigation**:
+    *   [Home, History, Profile] bar remains visible for consistency.
+    *   *Note*: Tapping away allows multi-tasking, but the timer continues.
+
 #### Mockup
 
-![Logger Mockup](assets/images/logger_mockup.png)
+![Logger Mockup](assets/images/unified_logger_mockup.png)
+
 
 ## Interaction Flows
 
