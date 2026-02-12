@@ -16,7 +16,7 @@ The Logger is the active state of a workout session.
 #### User Story: Pre-Populated Session
 When entering the logger from a selected Program Day:
 *   The list is populated with the exercises defined in the Program Sheet.
-*   Exercises are ordered by the `Order` column.
+*   Exercises are ordered implicitly by their **row sequence** in the Program Sheet.
 *   Each exercise card starts **Collapsed** (showing name + summary) except the **First Exercise** which is **Expanded**.
 
 #### Components
