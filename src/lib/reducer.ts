@@ -71,6 +71,12 @@ export const workoutSlice = createSlice({
                     state.lastSync = new Date().toISOString();
                     break;
 
+                case 'program/upsert':
+                    if (eventPayload && eventPayload.id) {
+                        state.programs[eventPayload.id] = eventPayload;
+                    }
+                    break;
+
                 case 'sync/error':
                     state.syncStatus = 'error';
                     break;

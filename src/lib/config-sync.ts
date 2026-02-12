@@ -160,21 +160,26 @@ async function appendRows(accessToken: string, spreadsheetId: string, range: str
     });
 }
 
+
 import { getActions, type ActionLogEntry } from './action-log';
+import { ensureStartingStrength, getPrograms } from './programs';
 
 export async function initializeAndSync(accessToken: string) {
     console.log('Starting initialization and sync...');
     store.dispatch(processEvent({ type: 'sync/start', payload: { timestamp: new Date().toISOString() } }));
 
     try {
+        // 0. Ensure Programs (Starting Strength) exist
+        ensureStartingStrength(accessToken).then(id => {
+            if (id) console.log(`Starting Strength program ensured: ${id}`);
+        }).catch(e => console.error('Error ensuring Starting Strength:', e));
+
         // 1. Replay Action Log (Source of Truth)
         console.log('Replaying action log...');
         const actions = await getActions(accessToken);
         console.log(`Found ${actions.length} actions to replay.`);
 
         actions.forEach((entry: ActionLogEntry) => {
-            // Dispatch with replay meta to avoid re-logging
-            // entry.payload is already the AppEvent { type, payload } object
             store.dispatch({
                 type: 'workout/processEvent',
                 payload: entry.payload,
@@ -233,14 +238,7 @@ export async function initializeAndSync(accessToken: string) {
                     current.defaultRpe === data.defaultRpe &&
                     tagsMatch) {
                     isDifferent = false;
-                } else {
-                    console.log(`Diff for ${name}:`);
-                    if (current.muscleGroup !== data.muscleGroup) console.log(`  Muscle: ${current.muscleGroup} != ${data.muscleGroup}`);
-                    if (current.defaultRpe !== data.defaultRpe) console.log(`  RPE: ${current.defaultRpe} != ${data.defaultRpe}`);
-                    if (!tagsMatch) console.log(`  Tags: ${JSON.stringify(currentTags)} != ${JSON.stringify(sheetTags)}`);
                 }
-            } else {
-                console.log(`New exercise found: ${name}`);
             }
 
             if (isDifferent) {
@@ -254,7 +252,34 @@ export async function initializeAndSync(accessToken: string) {
             }
         }
 
-        console.log('Config sync complete');
+        // 3. Sync Programs
+        console.log('Syncing programs...');
+        const programs = await getPrograms(accessToken);
+
+        // @ts-ignore
+        const currentPrograms = state.workout.programs || {};
+
+        for (const program of programs) {
+            // Logic to check diffs is complex for nested objects.
+            // For MVP: Upsert if it exists. 
+            // In a real app we'd deep compare or strict hash check.
+            // But here, since we parse fresh every time, let's just dispatch upsert.
+            // To avoid spamming, we can check basic equality of names or last modified if available.
+            // Let's at least check if ID exists.
+
+            // Actually, we want to update if user changed the sheet.
+            // Since we don't have a "last modified" easily without extra calls, 
+            // we will just upsert. Redux is cheap here.
+
+            store.dispatch(processEvent({
+                type: 'program/upsert',
+                payload: program
+            }));
+        }
+        console.log(`Synced ${programs.length} programs.`);
+
+
+        console.log('Config and Program sync complete');
         store.dispatch(processEvent({ type: 'sync/success', payload: { timestamp: new Date().toISOString() } }));
 
     } catch (e) {
@@ -262,3 +287,4 @@ export async function initializeAndSync(accessToken: string) {
         store.dispatch(processEvent({ type: 'sync/error', payload: { error: String(e), timestamp: new Date().toISOString() } }));
     }
 }
+
