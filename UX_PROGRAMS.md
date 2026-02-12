@@ -54,7 +54,7 @@ This is the first screen a user sees after clicking "Start Workout".
 
 #### Mockup
 
-![Program Selection Mockup](program_selection_mockup_1770910776748.png)
+![Program Selection Mockup](assets/images/program_selection_mockup.png)
 
 ## Interaction Flow
 

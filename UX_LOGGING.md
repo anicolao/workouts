@@ -52,7 +52,7 @@ When entering the logger from a selected Program Day:
 
 #### Mockup
 
-![Logger Mockup](logger_mockup_1770910801469.png)
+![Logger Mockup](assets/images/logger_mockup.png)
 
 ## Interaction Flows
 
