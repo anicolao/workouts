@@ -33,16 +33,20 @@ graph TD
 
 ### Workout Selection (Pre-Logging)
 -   **US-007**: As a user, I want to select a "Program" and "Day" from my configured list before I start logging.
--   **US-008**: As a user, I want to see the list of exercises for the selected day pre-populated in the logger.
--   **US-009**: As a user, I want to be able to add ad-hoc exercises to the session even if I selected a program.
+-   **US-008**: As a user, I want the system to suggest the "Next Day" in my program automatically so I don't have to remember where I left off.
+-   **US-009**: As a user, I want to manually override the suggested "Next Day" if I want to skip ahead or repeat a day.
+-   **US-010**: As a user, I want to see the list of exercises for the selected day pre-populated in the logger.
+-   **US-011**: As a user, I want to be able to add ad-hoc exercises to the session even if I selected a program.
 
 ### Logging
--   **US-010**: As a user, I want to log a set (Weight, Reps, RPE) with a single tap.
--   **US-011**: As a user, I want a rest timer to start automatically after logging a set.
--   **US-012**: As a user, I want to see my history for the current exercise while logging so that I know what weight to use.
+-   **US-012**: As a user, I want to log a set (Weight, Reps, RPE) with a single tap.
+-   **US-013**: As a user, I want a rest timer to start automatically after logging a set.
+-   **US-014**: As a user, I want to see my history for the current exercise while logging so that I know what weight to use.
+-   **US-015**: As a user, I want to **substitute** a pre-populated exercise with a different one (e.g., if equipment is busy) so that my log remains accurate.
+-   **US-016**: As a user, I want to **remove** an exercise from the current session if I decide to skip it.
 
 ### History & Progress
--   **US-013**: As a user, I want to visualize my estimated 1RM progress over time.
+-   **US-017**: As a user, I want to visualize my estimated 1RM progress over time.
 
 ## Data Schema (Google Sheets)
 
@@ -87,8 +91,9 @@ Defines the routines.
 ### Program Selection (New Step)
 *   **Goal**: Context setting before the workout.
 *   **Aesthetic**: Large cards or a list for "Today's Plan".
-*   **Action**: User selects "PPL - Push A".
-*   **Result**: Navigates to Logger with Bench Press and Pec Fly pre-loaded.
+*   **Default State**: Automatically selects the next scheduled workout day.
+*   **Edit Action**: "Change Program/Day" button allows manual override.
+*   **Next Step**: "Start Workout" button confirms the selection.
 
 ### Dashboard
 *   **Aesthetic**: Dark mode, "Data-First". High contrast, neon accents (cyan/lime).
@@ -100,6 +105,9 @@ Defines the routines.
 *   **Focus**: Efficiency. Large touch targets.
 *   **Header**: Session Timer and Current Exercise Name.
 *   **List**: Pre-populated list of exercises based on the selected program.
+*   **Exercise Actions (Swipe/Menu)**:
+    *   **Swap**: Replace this exercise with another from the catalog.
+    *   **Remove**: Delete this exercise from the current session.
 *   **Interaction**: User Taps an exercise to expand it and log sets.
 *   **Input**: Row of inputs for `Weight (kg)`, `Reps`, `RPE`, with a checkbox to mark as done.
 *   **Actions**: "Finish Workout" button.
