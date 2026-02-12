@@ -54,9 +54,13 @@ When entering the logger from a selected Program Day:
     *   [Home, History, Profile] bar remains visible for consistency.
     *   *Note*: Tapping away allows multi-tasking, but the timer continues.
 
-#### Mockup
+#### Mockups
 
-![Logger Mockup](assets/images/unified_logger_mockup.png)
+**Option A (Original)**
+![Logger Original](assets/images/logger_mockup.png)
+
+**Option B (Unified)**
+![Logger Unified](assets/images/unified_logger_mockup.png)
 
 
 ## Interaction Flows

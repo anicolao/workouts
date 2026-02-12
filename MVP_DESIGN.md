@@ -85,13 +85,13 @@ Each program file defines a routine.
 
 | Day Name | Exercise Name | Load | Rep Range | RPE | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| Push | Bench Press | 135 lbs | 5-8 | 8 | |
+| Push | Bench Press | 70% | 5-8 | 8 | |
 | Push | Pec Fly | | 10-12 | 9 | Drop set |
-| Pull | Deadlift | 315 lbs | 5 | | |
+| Pull | Deadlift | 85% | 5 | | |
 
 *   **Day Name**: Grouping key.
 *   **Exercise Name**: Must match an entry in the `Exercise Catalog`.
-*   **Load**: (Optional) Prescribed weight.
+*   **Load**: (Optional) Prescribed intensity as a **percentage of 1RM** (e.g., "70%").
 *   **Rep Range**: (Optional) Target reps (e.g., "5", "8-12").
 *   **RPE**: (Optional) Target intensity.
 
