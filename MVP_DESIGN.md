@@ -63,10 +63,7 @@ This sheet acts as the database's write-ahead log. It is strictly append-only.
 | `Payload` | JSON | Full details of the event |
 
 ### Spreadsheet 2: `Exercise Catalog` (User Editable)
-This sheet is designed for the user to view and manage their available exercises, settings, and programs.
-
-#### Tab 1: `Exercise Catalog`
-Defines the available movements.
+This sheet is designed for the user to view and manage their available exercises.
 
 | Exercise Name | Muscle Group | Default RPE | Tags |
 | :--- | :--- | :--- | :--- |
@@ -76,15 +73,21 @@ Defines the available movements.
 
 *(See `CONFIG_SHEET_DESIGN.md` for full details)*
 
-#### Tab 2: `Programs` (New)
-Defines the routines.
+### Folder Structure (User Editable)
+To manage Programs, the app uses a dedicated folder in Google Drive.
+*   **Path**: `Workouts App Data/Programs/`
+*   **Content**: Individual Spreadsheets for each program (e.g., `PPL.xlsx`).
 
-| Program Name | Day Name | Exercise Name | Order |
-| :--- | :--- | :--- | :--- |
-| PPL | Push | Bench Press | 1 |
-| PPL | Push | Pec Fly | 2 |
-| PPL | Pull | Deadlift | 1 |
-| PPL | Pull | Pull Up | 2 |
+#### Program Spreadsheet Schema
+Each program file defines a routine.
+
+| Day Name | Exercise Name | Order |
+| :--- | :--- | :--- |
+| Push | Bench Press | 1 |
+| Push | Pec Fly | 2 |
+| Pull | Deadlift | 1 |
+| Pull | Pull Up | 2 |
+
 
 ## UI Mockups
 
