@@ -1,19 +1,16 @@
-# Feature: Action Persistence & Sync Status UI
+# MVP Design Updates
 
 ## Description
-This PR introduces action logging to Google Sheets and a visible Sync Status UI. 
+This PR updates `MVP_DESIGN.md` to reflect the current state of the project and introduces a new workflow for workout programs.
 
-- **Action Log**: User actions (start workout, log set, etc.) are now appended to an `InternalEventLog` spreadsheet in the `Workouts` folder.
-- **Sync Status**: Users can now see the current sync status (Synced, Syncing, Error) via an icon in the header.
-- **Sync Page**: A dedicated page `/sync` details the last sync time and allows forcing a sync.
-- **Config Sync**: Includes the foundation for syncing exercise configuration from a generic `Exercise Catalog` sheet.
+## Key Changes
+-   **Architecture**: Added "Program Selection" step before logging.
+-   **User Stories**: Added stories for configuring and selecting programs.
+-   **Data Schema**: Defined `Programs` sheet structure.
+-   **UI Mockups**: detailed the Program Selection flow.
 
-## Implementation Details
-- **Middleware**: `actionLogMiddleware` in Redux store intercepts actions.
-- **Drive/Sheets API**: `drive-utils.ts` and `action-log.ts` handle API interactions.
-- **State Management**: Redux state updated to track `syncStatus` and `lastSync`.
-- **E2E Testing**: `tests/e2e/action-persistence.spec.ts` covers the full flow with mocked APIs.
+## Justification
+The user requested these updates to align the design document with the current reality and to specify the new program selection feature.
 
-## Verification
-- Ran E2E tests successfully.
-- Verified mocked API interactions for sheet creation and appending.
+## User Prompt
+> Review all the markdown in this repository and particularly the recently completed exercise catalog design. Then update the MVP_DESIGN.md document to reflect the current reality. Then, what we'd actually like is for hte users to be choosing and following a workout program beofre they log their exercise, so that when they start a workout day it can pre-populate with the exercises that they are likely to log. Add these user stories in before the logging and refine the design to include this step.
