@@ -105,7 +105,15 @@ Each program file defines a routine.
 *   **Aesthetic**: Consistent with Dashboard. Vertical list of cards.
 *   **Status**: Indicates "Active" program.
 
-![Program Selection Mockup](assets/images/unified_program_selection_mockup.png)
+**detailed Design**: [UX_PROGRAMS.md](UX_PROGRAMS.md)
+
+#### Mockups
+
+**Option A (Original)**
+![Program Selection Original](assets/images/program_selection_mockup.png)
+
+**Option B (Unified)**
+![Program Selection Unified](assets/images/unified_program_selection_mockup.png)
 
 
 ### Dashboard (Home)
@@ -127,9 +135,20 @@ Each program file defines a routine.
 *   **Input**: Row of inputs for `Weight (kg)`, `Reps`, `RPE`, with a checkbox to mark as done.
 *   **Actions**: "Finish Workout" button (bottom of list or top right).
 
-![Logger Mockup](assets/images/unified_logger_mockup.png)
+**Detailed Design**: [UX_LOGGING.md](UX_LOGGING.md)
+
+#### Mockups
+
+**Option A (Original)**
+![Logger Original](assets/images/logger_mockup.png)
+
+**Option B (Unified)**
+![Logger Unified](assets/images/unified_logger_mockup.png)
 
 
 ### Analytics
 *   **Chart**: Line graph of Estimated 1RM for selected exercise.
 *   **Data**: Clean, glowing line chart against dark background.
+
+![Analytics Mockup](assets/images/analytics.png)
+
