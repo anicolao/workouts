@@ -75,18 +75,26 @@ This sheet is designed for the user to view and manage their available exercises
 
 ### Folder Structure (User Editable)
 To manage Programs, the app uses a dedicated folder in Google Drive.
-*   **Path**: `Workouts App Data/Programs/`
+*   **Path**: `Workouts/Programs/`
 *   **Content**: Individual Spreadsheets for each program (e.g., `PPL.xlsx`).
 
 #### Program Spreadsheet Schema
 Each program file defines a routine.
+*   **Structure**: One **Sheet (Tab) per Week** of the program (e.g., `Week 1`, `Week 2`).
+*   **Ordering**: Exercises are ordered by their row position.
 
-| Day Name | Exercise Name | Order |
-| :--- | :--- | :--- |
-| Push | Bench Press | 1 |
-| Push | Pec Fly | 2 |
-| Pull | Deadlift | 1 |
-| Pull | Pull Up | 2 |
+| Day Name | Exercise Name | Load | Rep Range | RPE | Notes |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Push | Bench Press | 135 lbs | 5-8 | 8 | |
+| Push | Pec Fly | | 10-12 | 9 | Drop set |
+| Pull | Deadlift | 315 lbs | 5 | | |
+
+*   **Day Name**: Grouping key.
+*   **Exercise Name**: Must match an entry in the `Exercise Catalog`.
+*   **Load**: (Optional) Prescribed weight.
+*   **Rep Range**: (Optional) Target reps (e.g., "5", "8-12").
+*   **RPE**: (Optional) Target intensity.
+
 
 
 ## UI Mockups
