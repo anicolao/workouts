@@ -71,6 +71,30 @@ export const workoutSlice = createSlice({
                     state.lastSync = new Date().toISOString();
                     break;
 
+                case 'program/upsert':
+                    if (eventPayload && eventPayload.id) {
+                        state.programs[eventPayload.id] = eventPayload;
+                    }
+                    break;
+
+                case 'program/updateDay':
+                    if (eventPayload && eventPayload.programId && state.programs[eventPayload.programId]) {
+                        const { programId, weekIndex, dayIndex, day } = eventPayload;
+                        if (state.programs[programId].weeks[weekIndex]) {
+                            state.programs[programId].weeks[weekIndex].days[dayIndex] = day;
+                        }
+                    }
+                    break;
+
+                case 'program/updateExercise':
+                    if (eventPayload && eventPayload.programId && state.programs[eventPayload.programId]) {
+                        const { programId, weekIndex, dayIndex, exerciseIndex, exercise } = eventPayload;
+                        if (state.programs[programId].weeks[weekIndex]?.days[dayIndex]?.exercises) {
+                            state.programs[programId].weeks[weekIndex].days[dayIndex].exercises[exerciseIndex] = exercise;
+                        }
+                    }
+                    break;
+
                 case 'sync/error':
                     state.syncStatus = 'error';
                     break;

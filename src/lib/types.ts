@@ -1,8 +1,33 @@
+export interface Program {
+    id: string;
+    name: string;
+    weeks: ProgramWeek[];
+}
+
+export interface ProgramWeek {
+    name: string;
+    days: ProgramDay[];
+}
+
+export interface ProgramDay {
+    dayName: string;
+    exercises: ProgramExercise[];
+}
+
+export interface ProgramExercise {
+    name: string;
+    load: string;
+    reps: string;
+    rpe: string;
+    notes: string;
+}
+
 export interface WorkoutState {
     events: any[];
     currentWorkoutId: string | null;
     workouts: Record<string, Workout>;
     exercises: Record<string, Exercise>;
+    programs: Record<string, Program>; // Added
     isAuthenticated: boolean;
     user: User | null;
     accessToken: string | null;
@@ -44,6 +69,7 @@ export const initialState: WorkoutState = {
     currentWorkoutId: null,
     workouts: {},
     exercises: {},
+    programs: {}, // Added
     isAuthenticated: false,
     user: null,
     accessToken: null,

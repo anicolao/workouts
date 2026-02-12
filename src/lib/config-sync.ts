@@ -160,21 +160,26 @@ async function appendRows(accessToken: string, spreadsheetId: string, range: str
     });
 }
 
+
 import { getActions, type ActionLogEntry } from './action-log';
+import { ensureStartingStrength, getPrograms } from './programs';
 
 export async function initializeAndSync(accessToken: string) {
     console.log('Starting initialization and sync...');
     store.dispatch(processEvent({ type: 'sync/start', payload: { timestamp: new Date().toISOString() } }));
 
     try {
+        // 0. Ensure Programs (Starting Strength) exist
+        ensureStartingStrength(accessToken).then(id => {
+            if (id) console.log(`Starting Strength program ensured: ${id}`);
+        }).catch(e => console.error('Error ensuring Starting Strength:', e));
+
         // 1. Replay Action Log (Source of Truth)
         console.log('Replaying action log...');
         const actions = await getActions(accessToken);
         console.log(`Found ${actions.length} actions to replay.`);
 
         actions.forEach((entry: ActionLogEntry) => {
-            // Dispatch with replay meta to avoid re-logging
-            // entry.payload is already the AppEvent { type, payload } object
             store.dispatch({
                 type: 'workout/processEvent',
                 payload: entry.payload,
@@ -233,14 +238,7 @@ export async function initializeAndSync(accessToken: string) {
                     current.defaultRpe === data.defaultRpe &&
                     tagsMatch) {
                     isDifferent = false;
-                } else {
-                    console.log(`Diff for ${name}:`);
-                    if (current.muscleGroup !== data.muscleGroup) console.log(`  Muscle: ${current.muscleGroup} != ${data.muscleGroup}`);
-                    if (current.defaultRpe !== data.defaultRpe) console.log(`  RPE: ${current.defaultRpe} != ${data.defaultRpe}`);
-                    if (!tagsMatch) console.log(`  Tags: ${JSON.stringify(currentTags)} != ${JSON.stringify(sheetTags)}`);
                 }
-            } else {
-                console.log(`New exercise found: ${name}`);
             }
 
             if (isDifferent) {
@@ -254,7 +252,97 @@ export async function initializeAndSync(accessToken: string) {
             }
         }
 
-        console.log('Config sync complete');
+        // 3. Sync Programs
+        console.log('Syncing programs...');
+        const programs = await getPrograms(accessToken);
+
+        // @ts-ignore
+        const currentPrograms = state.workout.programs || {};
+
+        for (const program of programs) {
+            const current = currentPrograms[program.id];
+
+            if (!current) {
+                // New program, upsert entire thing
+                store.dispatch(processEvent({
+                    type: 'program/upsert',
+                    payload: program
+                }));
+                continue;
+            }
+
+            // Diffing Logic
+            // Iterate Weeks
+            for (let w = 0; w < program.weeks.length; w++) {
+                const week = program.weeks[w];
+                const currentWeek = current.weeks[w];
+
+                if (!currentWeek) {
+                    store.dispatch(processEvent({ type: 'program/upsert', payload: program }));
+                    break;
+                }
+
+                // Iterate Days
+                for (let d = 0; d < week.days.length; d++) {
+                    const day = week.days[d];
+                    const currentDay = currentWeek.days[d];
+
+                    if (!currentDay) {
+                        store.dispatch(processEvent({ type: 'program/upsert', payload: program }));
+                        break;
+                    }
+
+                    // Compare Exercises
+                    if (day.exercises.length !== currentDay.exercises.length) {
+                        store.dispatch(processEvent({
+                            type: 'program/updateDay',
+                            payload: {
+                                programId: program.id,
+                                weekIndex: w,
+                                dayIndex: d,
+                                day: day
+                            }
+                        }));
+                        continue;
+                    }
+
+                    // Same length, check individual exercises
+                    for (let e = 0; e < day.exercises.length; e++) {
+                        const ex = day.exercises[e];
+                        const curEx = currentDay.exercises[e];
+
+                        // Explicit Field Comparison
+                        const isDifferent =
+                            ex.name !== curEx.name ||
+                            ex.load !== curEx.load ||
+                            ex.reps !== curEx.reps ||
+                            ex.rpe !== curEx.rpe ||
+                            ex.notes !== curEx.notes;
+
+                        if (isDifferent) {
+                            console.log(`Exercise update detected: Week ${w}, Day ${d}, Ex ${e}`);
+                            console.log(`  Current: ${JSON.stringify(curEx)}`);
+                            console.log(`  New:     ${JSON.stringify(ex)}`);
+
+                            store.dispatch(processEvent({
+                                type: 'program/updateExercise',
+                                payload: {
+                                    programId: program.id,
+                                    weekIndex: w,
+                                    dayIndex: d,
+                                    exerciseIndex: e,
+                                    exercise: ex
+                                }
+                            }));
+                        }
+                    }
+                }
+            }
+        }
+        console.log(`Synced ${programs.length} programs.`);
+
+
+        console.log('Config and Program sync complete');
         store.dispatch(processEvent({ type: 'sync/success', payload: { timestamp: new Date().toISOString() } }));
 
     } catch (e) {
@@ -262,3 +350,4 @@ export async function initializeAndSync(accessToken: string) {
         store.dispatch(processEvent({ type: 'sync/error', payload: { error: String(e), timestamp: new Date().toISOString() } }));
     }
 }
+

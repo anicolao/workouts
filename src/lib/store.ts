@@ -14,7 +14,7 @@ const actionLogMiddleware: Middleware = storeAPI => next => action => {
         // We log 'exercise/upsert' only if it originated from the app (not sync), but for now log all to be safe?
         // Actually, log internal events.
         const meta = (action as any).meta;
-        if (!meta?.replay && ['workout/start', 'set/log', 'workout/end', 'exercise/create', 'exercise/upsert'].includes(actionType)) {
+        if (!meta?.replay && ['workout/start', 'set/log', 'workout/end', 'exercise/create', 'exercise/upsert', 'program/upsert', 'program/updateDay', 'program/updateExercise'].includes(actionType)) {
             // For now, generate a UUID for the event if not present (though our actions might not have IDs yet)
             // Ideally actions should be standard.
 
